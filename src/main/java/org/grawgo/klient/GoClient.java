@@ -5,37 +5,47 @@ import java.io.*;
 
 public class GoClient {
     public static void main(String[] args) {
-        try{
-            Socket socket = new Socket("localhost", 4444); 
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            // TODO: w intellij nie mogę odpalić konsoli, możesz zmienić i/o?
-            Console console = System.console();
+        try {
+            Socket socket = new Socket("localhost", 4444);
+            PrintWriter clientOut = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader clientIn = new BufferedReader(new InputStreamReader(System.in));
             String text;
             String response;
-        do {
-            text = console.readLine("Input command: ");
-            out.println(text);
-            response=in.readLine();
-            if(response.equals("legal")){
-                System.out.println("moved");
-            }
-            else if(response.equals("disconnect")){
-                System.out.println("disconnecting...");
-            }
-            else if(response.equals("invalid")){
-                System.out.println("invalid command");
-            }
-            else{
-                System.out.println("encountered error");
-            }
-        } while (!text.equals("exit"));
+            do {
+                System.out.print("Input command: ");
+                text = clientIn.readLine();
+                clientOut.println(text);
+                response = inFromServer.readLine();
+                /////TODO: to powinna być robota ClientCommandParser
+                String command = response.split("\\$")[0];
+                String data = response.split("\\$")[1];
+                /////
+                switch (command) {
+                    case "DISCONNECT_RESPONSE":
+                        System.out.println("disconnecting...");
+                        break;
+                    case "INVALID_RESPONSE":
+                        System.out.println("invalid command");
+                        break;
+                    case "PLACE_RESPONSE":
+                        System.out.println("___________ TEST ________________");
+                        /////TODO: to powinna być robota ClientCommandParser
+                        String[] splitData = data.split("\\|");
+                        for (String splitDatum : splitData) {
+                            System.out.println(splitDatum);
+                        }
+                        /////
+                        break;
+                    default:
+                        System.out.println("____________ TEST _______________ default");
+                        break;
+                }
+            } while (!text.equals("exit"));
             socket.close();
-        }
-        catch (UnknownHostException ex) {
+        } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             System.out.println("I/O error: " + ex.getMessage());
         }
     }
