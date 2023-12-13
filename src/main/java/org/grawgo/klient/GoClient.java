@@ -10,14 +10,14 @@ public class GoClient {
             PrintWriter clientOut = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedReader clientIn = new BufferedReader(new InputStreamReader(System.in));
-            ClientCommandParser parser = new ClientCommandParser();
+            ClientCommandParser clientParser = new ClientCommandParser();
             String text;
             String input;
             String response;
             do {
                 System.out.print("Input command: ");
                 input = clientIn.readLine();
-                text=parser.parseInput(input);
+                text=clientParser.parseInput(input);
                 clientOut.println(text);
                 response = inFromServer.readLine();
                 /////TODO: to powinna być robota ClientCommandParser

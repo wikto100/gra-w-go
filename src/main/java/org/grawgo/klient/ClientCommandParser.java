@@ -1,5 +1,5 @@
 package org.grawgo.klient;
-
+//TODO parser wiadomosci z serwera
 public class ClientCommandParser {
     String parseInput(String input){
         String[] splitInput=input.split("\\ ");

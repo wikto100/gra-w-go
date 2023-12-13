@@ -29,19 +29,25 @@ public class GoThread extends Thread {
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
             OutputStream output = socket.getOutputStream();
             PrintWriter out = new PrintWriter(output, true);
+            ServerCommandParser serverParser = ServerCommandParser.getInstance();
             String command;
+            String parsedCommand;
             String response;
+            int row;
+            int column;
+            int coords[] = new int[2];
             label:
             while (true) {
                 command = in.readLine();
+                parsedCommand=serverParser.parseCommand(command);
                 System.out.println(command);
-                switch (command) {
+                switch (parsedCommand) {
                     case "place":
-                        // TODO: wymyśl jakiś regex i parser dla komend wysyłanych z klienta
-                        currBoard.placeStone(1,2, StoneColor.BLACK);
-                        currBoard.placeStone(3,4, StoneColor.BLACK);
-                        currBoard.placeStone(5,6, StoneColor.WHITE);
-
+                        coords=serverParser.parseData(command);
+                        row=coords[0];
+                        column=coords[1];
+                        // TODO: sprawdz legalnosc ruchu
+                        currBoard.placeStone(row,column,StoneColor.BLACK);
                         ////TODO: to powinna być robota ServerCommandParser (syntax: RESPONSE$data|data|data)
                         response = "PLACE_RESPONSE$";
                         // tutaj regex to komenda$rzad_planszy|rzad_planszy|rzad_planszy|rzad_planszy|
@@ -50,7 +56,7 @@ public class GoThread extends Thread {
                         ////
                         out.println(response);
                         break;
-                    case "exit$": //zmieniony az dodam server parser
+                    case "exit":
                         response = "DISCONNECT_RESPONSE$0";
                         out.println(response);
                         System.out.println("client disconnected");
