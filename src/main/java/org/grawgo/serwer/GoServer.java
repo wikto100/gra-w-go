@@ -4,9 +4,7 @@ import org.grawgo.core.Board;
 
 import java.io.*;
 import java.net.*;
-/**
- * Klasa serwera
- */
+
 public class GoServer {
     // instancja board przekazywana każdemu wątkowi do modyfikacji
     // TODO: board powinien być thread-safe

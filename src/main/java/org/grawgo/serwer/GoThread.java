@@ -1,6 +1,5 @@
 package org.grawgo.serwer;
 
-
 import org.grawgo.core.Board;
 import org.grawgo.core.StoneColor;
 import org.grawgo.exc.IllegalMoveException;
@@ -8,9 +7,6 @@ import org.grawgo.exc.IllegalMoveException;
 import java.io.*;
 import java.net.*;
 
-/**
- * Watek serwera
- */
 public class GoThread extends Thread {
     // TODO: każdy wątek powinien mieć dostęp do CommandParser jako singletonu
     private Socket socket;
