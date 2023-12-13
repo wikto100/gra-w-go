@@ -34,6 +34,7 @@ public class GoThread extends Thread {
             label:
             while (true) {
                 command = in.readLine();
+                System.out.println(command);
                 switch (command) {
                     case "place":
                         // TODO: wymyśl jakiś regex i parser dla komend wysyłanych z klienta
@@ -49,10 +50,11 @@ public class GoThread extends Thread {
                         ////
                         out.println(response);
                         break;
-                    case "exit":
+                    case "exit$": //zmieniony az dodam server parser
                         response = "DISCONNECT_RESPONSE$0";
                         out.println(response);
                         System.out.println("client disconnected");
+                        // TODO lepszy exit
                         break label; // <- czy to na pewno jest bezpieczne?
                     default:
                         response = "INVALID_RESPONSE$0";

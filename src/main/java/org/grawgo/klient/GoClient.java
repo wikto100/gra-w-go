@@ -10,11 +10,14 @@ public class GoClient {
             PrintWriter clientOut = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedReader clientIn = new BufferedReader(new InputStreamReader(System.in));
+            ClientCommandParser parser = new ClientCommandParser();
             String text;
+            String input;
             String response;
             do {
                 System.out.print("Input command: ");
-                text = clientIn.readLine();
+                input = clientIn.readLine();
+                text=parser.parseInput(input);
                 clientOut.println(text);
                 response = inFromServer.readLine();
                 /////TODO: to powinna być robota ClientCommandParser
@@ -41,7 +44,7 @@ public class GoClient {
                         System.out.println("____________ TEST _______________ default");
                         break;
                 }
-            } while (!text.equals("exit"));
+            } while (!input.equals("exit"));
             socket.close();
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
