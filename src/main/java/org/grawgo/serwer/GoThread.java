@@ -1,6 +1,5 @@
 package org.grawgo.serwer;
 
-
 import org.grawgo.core.Board;
 import org.grawgo.core.StoneColor;
 import org.grawgo.exc.IllegalMoveException;
@@ -9,9 +8,9 @@ import java.io.*;
 import java.net.*;
 
 public class GoThread extends Thread {
-    // TODO: każdy wątek powinien mieć dostęp do CommandParser jako singletonu
     private Socket socket;
     private Board currBoard;
+    private ServerCommandParser serverParser = ServerCommandParser.getInstance();
     public GoThread(Socket socket) {
 
         this.socket = socket;
@@ -19,17 +18,12 @@ public class GoThread extends Thread {
         this.currBoard = GoServer.getBoard();
     }
 
-    /**
-     * Glowna funkcja watku
-     */
     public void run() {
         try {
-
             InputStream input = socket.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
             OutputStream output = socket.getOutputStream();
             PrintWriter out = new PrintWriter(output, true);
-            ServerCommandParser serverParser = ServerCommandParser.getInstance();
             String command;
             String parsedCommand;
             String response;
@@ -40,20 +34,14 @@ public class GoThread extends Thread {
             while (true) {
                 command = in.readLine();
                 parsedCommand=serverParser.parseCommand(command);
-                System.out.println(command);
                 switch (parsedCommand) {
                     case "place":
                         coords=serverParser.parseData(command);
                         row=coords[0];
                         column=coords[1];
-                        // TODO: sprawdz legalnosc ruchu
                         currBoard.placeStone(row,column,StoneColor.BLACK);
-                        ////TODO: to powinna być robota ServerCommandParser (syntax: RESPONSE$data|data|data)
-                        response = "PLACE_RESPONSE$";
-                        // tutaj regex to komenda$rzad_planszy|rzad_planszy|rzad_planszy|rzad_planszy|
-                        // zrob to przez stringbuildera
-                        response += currBoard.printBoard();
-                        ////
+                        //TODO: znajdz zbite piony
+                        response=serverParser.parseOutput(currBoard);
                         out.println(response);
                         break;
                     case "exit":

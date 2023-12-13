@@ -1,5 +1,6 @@
 package org.grawgo.serwer;
-//TODO: Parser dla wiadomsci z serwera
+
+import org.grawgo.core.Board;
 //TODO wylapywanie nieprawidlowych danych po place
 //Double locked singleton
 public class ServerCommandParser {
@@ -30,5 +31,11 @@ public class ServerCommandParser {
         coords[0]=Integer.parseInt(data.split("\\|")[0])-1;
         coords[1]=Integer.parseInt(data.split("\\|")[1])-1;
         return coords;
+    }
+
+    String parseOutput(Board board){
+        String response="PLACE_RESPONSE$";
+        response+=board.printBoard();
+        return response;
     }
 }

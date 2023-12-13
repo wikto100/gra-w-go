@@ -14,16 +14,14 @@ public class GoClient {
             String text;
             String input;
             String response;
+            String command;
             do {
                 System.out.print("Input command: ");
                 input = clientIn.readLine();
                 text=clientParser.parseInput(input);
                 clientOut.println(text);
                 response = inFromServer.readLine();
-                /////TODO: to powinna być robota ClientCommandParser
-                String command = response.split("\\$")[0];
-                String data = response.split("\\$")[1];
-                /////
+                command = clientParser.parseResponse(response);
                 switch (command) {
                     case "DISCONNECT_RESPONSE":
                         System.out.println("disconnecting...");
@@ -33,12 +31,7 @@ public class GoClient {
                         break;
                     case "PLACE_RESPONSE":
                         System.out.println("___________ TEST ________________");
-                        /////TODO: to powinna być robota ClientCommandParser
-                        String[] splitData = data.split("\\|");
-                        for (String splitDatum : splitData) {
-                            System.out.println(splitDatum);
-                        }
-                        /////
+                        clientParser.parseBoard(response);
                         break;
                     default:
                         System.out.println("____________ TEST _______________ default");

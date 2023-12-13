@@ -12,4 +12,16 @@ public class ClientCommandParser {
         }
         return parsedInput;
     }
+
+    String parseResponse(String response){
+        return response.split("\\$")[0];
+    }
+
+    void parseBoard(String response){
+        String data = response.split("\\$")[1];
+        String[] splitData = data.split("\\|");
+        for (String splitDatum : splitData) {
+            System.out.println(splitDatum);
+        }
+    }
 }
