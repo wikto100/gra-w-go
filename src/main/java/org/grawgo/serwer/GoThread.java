@@ -1,5 +1,6 @@
 package org.grawgo.serwer;
 
+
 import org.grawgo.core.Board;
 import org.grawgo.core.StoneColor;
 import org.grawgo.exc.IllegalMoveException;
@@ -49,11 +50,13 @@ public class GoThread extends Thread {
                         out.println(response);
                         break;
                     case "exit":
-                        out.println("disconnect");
+                        response = "DISCONNECT_RESPONSE$0";
+                        out.println(response);
                         System.out.println("client disconnected");
                         break label; // <- czy to na pewno jest bezpieczne?
                     default:
-                        out.println("invalid");
+                        response = "INVALID_RESPONSE$0";
+                        out.println(response);
                         System.out.println("invalid command");
                         break;
                 }
