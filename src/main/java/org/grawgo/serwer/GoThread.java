@@ -12,7 +12,6 @@ public class GoThread extends Thread {
     private Board currBoard;
     private ServerCommandParser serverParser = ServerCommandParser.getInstance();
     public GoThread(Socket socket) {
-
         this.socket = socket;
         // zaczytaj stan planszy z serwera (może można to zrobić jakoś lepiej)
         this.currBoard = GoServer.getBoard();
@@ -24,25 +23,53 @@ public class GoThread extends Thread {
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
             OutputStream output = socket.getOutputStream();
             PrintWriter out = new PrintWriter(output, true);
+            StoneColor player=null;
             String command;
             String parsedCommand;
             String response;
             int row;
             int column;
             int coords[] = new int[2];
+            command = in.readLine();
+            parsedCommand=serverParser.parseCommand(command);
+            //TODO ogranicz do 2 graczy roznych kolorow
+            if(parsedCommand.equals("white")){
+                player=StoneColor.WHITE;
+                response = "COLOR_SUCCESFULL_RESPONSE$0";
+                out.println(response);
+                System.out.println("white player connected");
+            }
+            else if(parsedCommand.equals("black")){
+                player=StoneColor.BLACK;
+                response = "COLOR_SUCCESFULL_RESPONSE$0";
+                out.println(response);
+                System.out.println("black player connected");
+            }
+            else{
+                //TODO nieprawidlowy wybor koloru
+                System.out.println("color error placeholder");
+            }
             label:
             while (true) {
+                //TODO: Sprawdz czy wlasciwa tura
                 command = in.readLine();
                 parsedCommand=serverParser.parseCommand(command);
                 switch (parsedCommand) {
                     case "place":
+                        //TODO: wyswietl plansze po ruchu przeciwnika
                         coords=serverParser.parseData(command);
                         row=coords[0];
                         column=coords[1];
-                        currBoard.placeStone(row,column,StoneColor.BLACK);
+                        currBoard.placeStone(row,column,player);
                         //TODO: znajdz zbite piony
                         response=serverParser.parseOutput(currBoard);
                         out.println(response);
+                        break;
+                    case "skip":
+                        //TODO sprawdz czy poprzedni ruch to skip
+                        response = "SKIP_RESPONSE$0";
+                        out.println(response);
+                        System.out.println("skipped turn");
                         break;
                     case "exit":
                         response = "DISCONNECT_RESPONSE$0";

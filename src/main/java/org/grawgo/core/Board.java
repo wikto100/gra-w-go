@@ -20,7 +20,7 @@ public class Board implements Rules {
 
     @Override
     public boolean isLegal(int x, int y, StoneColor stoneColor) {
-        //TODO: && (this.currPlayer.equals(stoneColor))
+        //TODO: && (this.currPlayer.equals(stoneColor)) <-nie wiem czy nie lepiej sprawdzac ture w GoThread przy podaniu komendy
         return ((x >= 0 && x < this.size) &&
                 (y >= 0 && y < this.size));
     }

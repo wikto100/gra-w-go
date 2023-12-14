@@ -15,6 +15,17 @@ public class GoClient {
             String input;
             String response;
             String command;
+            String color;
+            System.out.println("Pick color");
+            color=clientIn.readLine();
+            text=clientParser.parseInput(color);
+            clientOut.println(text);
+            response = inFromServer.readLine();
+            command = clientParser.parseResponse(response);
+            //TODO: zle wybrany kolor
+            if(command.equals("COLOR_SUCCESFULL_RESPONSE")){
+                System.out.println("Playing as "+color);
+            }
             do {
                 System.out.print("Input command: ");
                 input = clientIn.readLine();
@@ -28,6 +39,9 @@ public class GoClient {
                         break;
                     case "INVALID_RESPONSE":
                         System.out.println("invalid command");
+                        break;
+                    case "SKIP_RESPONSE":
+                        System.out.println("skipped turn");
                         break;
                     case "PLACE_RESPONSE":
                         System.out.println("___________ TEST ________________");
