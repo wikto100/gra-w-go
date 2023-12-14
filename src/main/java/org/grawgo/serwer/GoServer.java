@@ -8,6 +8,7 @@ import java.net.*;
 public class GoServer {
     // instancja board przekazywana każdemu wątkowi do modyfikacji
     // TODO: board powinien być thread-safe
+    // TODO: nowa plansza po zakonczeniu gry
     private static volatile Board board;
     public static void main(String[] args) {
         //TODO: zaimplementuj zmianę rozmiaru planszy

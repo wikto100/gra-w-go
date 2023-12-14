@@ -23,7 +23,7 @@ public class GoClient {
             response = inFromServer.readLine();
             command = clientParser.parseResponse(response);
             //TODO: zle wybrany kolor
-            if(command.equals("COLOR_SUCCESFULL_RESPONSE")){
+            if(command.equals("JOIN_SUCCESFULL_RESPONSE")){
                 System.out.println("Playing as "+color);
             }
             do {
@@ -47,11 +47,16 @@ public class GoClient {
                         System.out.println("___________ TEST ________________");
                         clientParser.parseBoard(response);
                         break;
+                    case "END_GAME_RESPONSE":
+                        System.out.println("THE GAME HAS ENDED");
+                        System.out.println("WHITE: "+clientParser.getData(response,0)+" BLACK: "+clientParser.getData(response,1));
+                        input="exit";
+                        break;
                     default:
                         System.out.println("____________ TEST _______________ default");
                         break;
                 }
-            } while (!input.equals("exit"));
+            } while (!input.equals("exit")); //Potencjalnie do zmiany
             socket.close();
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());

@@ -17,6 +17,11 @@ public class ClientCommandParser {
         return response.split("\\$")[0];
     }
 
+    String getData(String response,int field){
+        String data = response.split("\\$")[1];
+        return data.split("\\|")[field];
+    }
+
     void parseBoard(String response){
         String data = response.split("\\$")[1];
         String[] splitData = data.split("\\|");

@@ -32,16 +32,19 @@ public class GoThread extends Thread {
             int coords[] = new int[2];
             command = in.readLine();
             parsedCommand=serverParser.parseCommand(command);
-            //TODO ogranicz do 2 graczy roznych kolorow
-            if(parsedCommand.equals("white")){
+            //TODO do przeniesienia do board && nie thread-safe
+            //TODO czekaj na 2 graczy
+            if(parsedCommand.equals("white") && currBoard.whiteConnected==false){
                 player=StoneColor.WHITE;
-                response = "COLOR_SUCCESFULL_RESPONSE$0";
+                currBoard.connect(parsedCommand);
+                response = "JOIN_SUCCESFULL_RESPONSE$0";
                 out.println(response);
                 System.out.println("white player connected");
             }
-            else if(parsedCommand.equals("black")){
+            else if(parsedCommand.equals("black") && currBoard.blackConnected==false){
                 player=StoneColor.BLACK;
-                response = "COLOR_SUCCESFULL_RESPONSE$0";
+                currBoard.connect(parsedCommand);
+                response = "JOIN_SUCCESFULL_RESPONSE$0";
                 out.println(response);
                 System.out.println("black player connected");
             }
@@ -67,9 +70,19 @@ public class GoThread extends Thread {
                         break;
                     case "skip":
                         //TODO sprawdz czy poprzedni ruch to skip
-                        response = "SKIP_RESPONSE$0";
-                        out.println(response);
-                        System.out.println("skipped turn");
+                        response = currBoard.skip();
+                        if (response.equals("SKIP_RESPONSE$0")){
+                            out.println(response);
+                            System.out.println("skipped turn");
+                        }
+                        else if (response.equals("END_GAME_RESPONSE$")){
+                            //TODO: policz wynik
+                            response+="0|0";
+                            out.println(response);
+                            System.out.println("Ending game");
+                            //TODO: lepszy exit
+                            break label;
+                        }
                         break;
                     case "exit":
                         response = "DISCONNECT_RESPONSE$0";
