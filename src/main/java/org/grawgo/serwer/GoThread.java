@@ -77,6 +77,7 @@ public class GoThread extends Thread {
                         }
                         else if (response.equals("END_GAME_RESPONSE$")){
                             //TODO: policz wynik
+                            //TODO: wyswietl wynik i zakoncz gre u obu graczy
                             response+="0|0";
                             out.println(response);
                             System.out.println("Ending game");
