@@ -25,10 +25,10 @@ public class ColorPickingState extends ThreadState {
 
                 }
             }
-            Thread.sleep(100);
+            //Thread.sleep(100); <- JESLI THREAD-0 sie WYWALA to odkomentowac to
             // po tym jak bialy gracz mnie obudzil, musze ustawic otherplayer na tego kto mnie obbudzil
             // a ten kto mnie obudzil ma mnie jako otherplayer
-            synchronized (myPlayer) {
+            synchronized (GoServer.class) {
                 if (otherPlayer == null)
                     otherPlayer = GoServer.findOther(myPlayer);
             }
@@ -60,9 +60,9 @@ public class ColorPickingState extends ThreadState {
                     myPlayer.wait();
                 }
             }
-            Thread.sleep(100);
+            //Thread.sleep(100); <- JESLI THREAD-0 sie WYWALA to odkomentowac to
             // znajdz kto mnie ma
-            synchronized (myPlayer) {
+            synchronized (GoServer.class) {
                 if (otherPlayer == null)
                     otherPlayer = GoServer.findOther(myPlayer);
             }

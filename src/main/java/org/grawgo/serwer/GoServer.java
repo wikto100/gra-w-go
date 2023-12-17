@@ -15,7 +15,7 @@ public class GoServer {
     private static volatile Board board;
     private static volatile boolean whiteConnected = false;
     private static volatile boolean blackConnected = false;
-    public static ArrayList<GoThread> threads = new ArrayList<>();
+    public static volatile ArrayList<GoThread> threads = new ArrayList<>();
 
     public static void main(String[] args) {
         //TODO: zaimplementuj zmianę rozmiaru planszy
