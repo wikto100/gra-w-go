@@ -47,8 +47,10 @@ public class GoThread extends Thread implements ServerCommandInterface {
                 switch (parsedCommand) {
                     case "white":
                         currState.handleWhitePick();
+                        break;
                     case "black":
                         currState.handleBlackPick();
+                        break;
                     case "place":
                         currState.handlePlace(command);
                         break;

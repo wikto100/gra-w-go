@@ -6,7 +6,7 @@ import org.grawgo.serwer.ServerCommandParser;
 
 public abstract class ThreadState implements ServerCommandInterface {
     protected final GoThread myPlayer;
-    protected GoThread otherPlayer;
+    protected volatile GoThread otherPlayer;
     ServerCommandParser serverParser;
 
     public ThreadState(GoThread myPlayer, GoThread otherPlayer) {

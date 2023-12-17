@@ -20,7 +20,6 @@ public class ClientCommandParser {
             dataBuilder.append(splitInput[i]);
             dataBuilder.append('|');
         }
-
         return (command + dataBuilder);
     }
 

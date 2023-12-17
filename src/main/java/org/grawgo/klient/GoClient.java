@@ -69,7 +69,7 @@ public class GoClient {
                 System.out.println("WHITE: " + clientParser.parseDataFromServer(response, 0) + " BLACK: " + clientParser.parseDataFromServer(response, 1));
                 return false;
             default:
-                System.out.println("____________ TEST _______________ default");
+                System.out.println("_____________UNHANDLED:"+ command);
                 return true;
         }
 
