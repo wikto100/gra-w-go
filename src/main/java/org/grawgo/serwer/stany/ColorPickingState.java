@@ -13,8 +13,7 @@ public class ColorPickingState extends ThreadState {
         if (!GoServer.isBlackConnected()) {
             myPlayer.setPlayer("black");
             GoServer.connect("black");
-            if (otherPlayer == null)
-                otherPlayer = GoServer.getFirstWhiteSleeper();
+            otherPlayer = GoServer.getFirstWhiteSleeper();
             if (otherPlayer != null) {
                 synchronized (otherPlayer) {
                     otherPlayer.notify();
@@ -44,8 +43,7 @@ public class ColorPickingState extends ThreadState {
         if (!GoServer.isWhiteConnected()) {
             myPlayer.setPlayer("white");
             GoServer.connect("white");
-            if (otherPlayer == null)
-                otherPlayer = GoServer.getFirstBlackSleeper();
+            otherPlayer = GoServer.getFirstBlackSleeper();
             if (otherPlayer != null) {
                 // jesli jest jakis czekający czarny gracz to go budzę
                 synchronized (otherPlayer) {
