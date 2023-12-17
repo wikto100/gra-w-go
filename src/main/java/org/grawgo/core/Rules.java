@@ -1,10 +1,8 @@
 package org.grawgo.core;
 
-import org.grawgo.exc.IllegalMoveException;
-
 public interface Rules {
-    boolean isLegal(int x, int y, StoneColor stoneColor);
-    void placeStone(int x, int y, StoneColor stoneColor) throws IllegalMoveException;
+    boolean isLegal(int x, int y);
+    void placeStone(int[] coords, StoneColor stoneColor);
     String skip();
 // TODO: reszta zasad
 }

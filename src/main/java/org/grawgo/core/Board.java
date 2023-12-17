@@ -1,47 +1,41 @@
 package org.grawgo.core;
 
-import org.grawgo.exc.IllegalMoveException;
-
 
 //TODO: to nie jest jeszcze thread-safe jako
 // klasa statyczna współdzielona przez GoThready. Zaimplementujmy jakieś locki żeby było ok
 public class Board implements Rules {
     private final Stone[][] stones;
     //TODO: zmieniaj currPlayer w zaleznosci od tego kto wykonal ruch (thread-safe) <-czy to musi byc thread-safe jezeli tylko jeden gracz naraz moze postawic kamien
-    private StoneColor currPlayer;
     private final int size;
-    private boolean previouslySkipped=false;
-    public boolean whiteConnected=false;
-    public boolean blackConnected=false;
+    private boolean previouslySkipped=false; // eeee
 
     public Board(int size) {
         this.size = size;
-        // czarne zaczynają
-        this.currPlayer = StoneColor.BLACK;
         stones = new Stone[size][size];
     }
 
     @Override
-    public boolean isLegal(int x, int y, StoneColor stoneColor) {
-        //TODO: && (this.currPlayer.equals(stoneColor)) <-nie wiem czy nie lepiej sprawdzac ture w GoThread przy podaniu komendy
+    public boolean isLegal(int x, int y) {
         //TODO: sprawdz oddechy kamienia
         return ((x >= 0 && x < this.size) &&
                 (y >= 0 && y < this.size));
     }
 
     @Override
-    public void placeStone(int x, int y, StoneColor stoneColor) throws IllegalMoveException {
-        if (isLegal(x, y, stoneColor)) {
+    public void placeStone(int[] coords, StoneColor stoneColor){
+        int x = coords[0];
+        int y = coords[1];
+        if (isLegal(x, y)) {
             this.stones[x][y] = new Stone(stoneColor);
             this.previouslySkipped = false;
         } else {
-            throw new IllegalMoveException();
+            //TODO: zwroc komunikat o nieprawidlowym ruchu
         }
     }
 
     @Override
     public String skip(){
-        if (previouslySkipped==true){
+        if (previouslySkipped){
             return "END_GAME_RESPONSE$";
         }
         else{
@@ -70,12 +64,5 @@ public class Board implements Rules {
         return stringBuilder.toString();
     }
 
-    public void connect(String player){
-        if(player.equals("white")){
-            this.whiteConnected=true;
-        }
-        else if(player.equals("black")){
-            this.blackConnected=true;
-        }
-    }
+
 }

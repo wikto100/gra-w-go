@@ -6,14 +6,14 @@ import org.junit.Test;
 
 public class ClientParserTest 
 {
-    private ClientCommandParser testParser = new ClientCommandParser();
+    private final ClientCommandParser testParser = new ClientCommandParser();
 
     @Test
     public void inputTest1()
     {
         String result;
         String expected="place$1|1";
-        result=testParser.parseInput("place 1 1");
+        result=testParser.parseInputFromUser("place 1 1");
         assertEquals(result,expected);
     }
 
@@ -22,7 +22,7 @@ public class ClientParserTest
     {
         String result;
         String expected="exit$";
-        result=testParser.parseInput("exit");
+        result=testParser.parseInputFromUser("exit");
         assertEquals(result,expected);
     }
 
@@ -31,7 +31,7 @@ public class ClientParserTest
     {
         String result;
         String expected="DISCONNECT_RESPONSE";
-        result=testParser.parseResponse("DISCONNECT_RESPONSE$0");
+        result=testParser.parseCommandFromServer("DISCONNECT_RESPONSE$0");
         assertEquals(result,expected);
     }
 }

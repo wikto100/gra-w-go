@@ -1,7 +1,7 @@
 package org.grawgo.core;
 
 public class Stone {
-    private StoneColor stoneColor;
+    private final StoneColor stoneColor;
 
     public Stone(StoneColor stoneColor) {
         this.stoneColor = stoneColor;

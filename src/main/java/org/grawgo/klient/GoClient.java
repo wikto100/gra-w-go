@@ -4,59 +4,79 @@ import java.net.*;
 import java.io.*;
 
 public class GoClient {
+    private static PrintWriter clientOut;
+    private static BufferedReader inFromServer;
+    private static BufferedReader clientIn;
+    private static ClientCommandParser clientParser;
+    private static Socket socket;
+    private static void joinServer() throws IOException{
+        socket = new Socket("localhost", 4444);
+        clientOut = new PrintWriter(socket.getOutputStream(), true);
+        inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        clientIn = new BufferedReader(new InputStreamReader(System.in));
+        clientParser = new ClientCommandParser();
+    }
+    private static void pickColor() throws IOException{
+        String parsedUserInput;
+        String color;
+        String response;
+        String command;
+        System.out.println("Pick color (& wait): ");
+        color = clientIn.readLine();
+        parsedUserInput = clientParser.parseInputFromUser(color);
+        clientOut.println(parsedUserInput);
+        response = inFromServer.readLine();
+        command = clientParser.parseCommandFromServer(response);
+        //TODO: zle wybrany kolor
+        if (command.equals("JOIN_SUCCESSFUL_RESPONSE")) {
+            System.out.println("Playing as " + color);
+        } else if (command.equals("JOIN_FAILED_RESPONSE")) {
+            System.out.println("Select the other color: ");
+        }
+    }
+    private static boolean play() throws IOException{
+        String userInput;
+        String parsedUserInput;
+        String response;
+        String command;
+        System.out.print("Input command: ");
+        userInput = clientIn.readLine();
+        parsedUserInput = clientParser.parseInputFromUser(userInput);
+        clientOut.println(parsedUserInput);
+        response = inFromServer.readLine();
+        command = clientParser.parseCommandFromServer(response);
+        switch (command) {
+            case "DISCONNECT_RESPONSE":
+                System.out.println("disconnecting...");
+                return false;
+            case "INVALID_RESPONSE":
+                System.out.println("invalid command");
+                return true;
+            case "SKIP_RESPONSE":
+                System.out.println("skipped turn");
+                return true;
+            case "PLACE_RESPONSE":
+                System.out.println("___________ TEST ________________");
+                clientParser.parseBoardFromServer(response);
+                return true;
+            case "END_GAME_RESPONSE":
+                System.out.println("THE GAME HAS ENDED");
+                System.out.println("WHITE: " + clientParser.parseDataFromServer(response, 0) + " BLACK: " + clientParser.parseDataFromServer(response, 1));
+                return false;
+            default:
+                System.out.println("____________ TEST _______________ default");
+                return true;
+        }
+
+    }
     public static void main(String[] args) {
+        boolean isPlaying;
         try {
-            Socket socket = new Socket("localhost", 4444);
-            PrintWriter clientOut = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedReader clientIn = new BufferedReader(new InputStreamReader(System.in));
-            ClientCommandParser clientParser = new ClientCommandParser();
-            String text;
-            String input;
-            String response;
-            String command;
-            String color;
-            System.out.println("Pick color");
-            color=clientIn.readLine();
-            text=clientParser.parseInput(color);
-            clientOut.println(text);
-            response = inFromServer.readLine();
-            command = clientParser.parseResponse(response);
-            //TODO: zle wybrany kolor
-            if(command.equals("JOIN_SUCCESFULL_RESPONSE")){
-                System.out.println("Playing as "+color);
-            }
+            joinServer();
+            pickColor();
             do {
-                System.out.print("Input command: ");
-                input = clientIn.readLine();
-                text=clientParser.parseInput(input);
-                clientOut.println(text);
-                response = inFromServer.readLine();
-                command = clientParser.parseResponse(response);
-                switch (command) {
-                    case "DISCONNECT_RESPONSE":
-                        System.out.println("disconnecting...");
-                        break;
-                    case "INVALID_RESPONSE":
-                        System.out.println("invalid command");
-                        break;
-                    case "SKIP_RESPONSE":
-                        System.out.println("skipped turn");
-                        break;
-                    case "PLACE_RESPONSE":
-                        System.out.println("___________ TEST ________________");
-                        clientParser.parseBoard(response);
-                        break;
-                    case "END_GAME_RESPONSE":
-                        System.out.println("THE GAME HAS ENDED");
-                        System.out.println("WHITE: "+clientParser.getData(response,0)+" BLACK: "+clientParser.getData(response,1));
-                        input="exit";
-                        break;
-                    default:
-                        System.out.println("____________ TEST _______________ default");
-                        break;
-                }
-            } while (!input.equals("exit")); //Potencjalnie do zmiany
+                isPlaying = play();
+            } while (isPlaying); //Potencjalnie do zmiany
             socket.close();
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
