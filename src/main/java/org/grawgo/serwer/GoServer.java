@@ -50,8 +50,36 @@ public class GoServer {
             blackConnected = true;
         }
     }
-    public static void disconnect(String player){
+
+    public static void disconnect(String player) {
         //TODO: eeee
+    }
+
+    // zwroc pierwszego czarnego ktory spi
+    public static GoThread getFirstBlackSleeper() {
+        for (GoThread player : threads) {
+            if (player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("BLACK")) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public static GoThread getFirstWhiteSleeper() {
+        for (GoThread player : threads) {
+            if (player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("WHITE")) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public static GoThread findOther(GoThread me) {
+        for (GoThread player : threads) {
+            if (player.getOpponent().equals(me))
+                return player;
+        }
+        return null;
     }
 
     public static Boolean isWhiteConnected() {

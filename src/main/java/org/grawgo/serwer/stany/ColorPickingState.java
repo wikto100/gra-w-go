@@ -1,70 +1,94 @@
 package org.grawgo.serwer.stany;
 
-import org.grawgo.core.StoneColor;
 import org.grawgo.serwer.GoServer;
 import org.grawgo.serwer.GoThread;
 
 public class ColorPickingState extends ThreadState {
-    public ColorPickingState(GoThread goThread) {
-        super(goThread);
+    public ColorPickingState(GoThread player1, GoThread player2) {
+        super(player1, player2);
     }
 
     @Override
-    public void handleBlackPick() {
+    public void handleBlackPick() throws InterruptedException {
         if (!GoServer.isBlackConnected()) {
-            goThread.setPlayer(StoneColor.BLACK);
+            myPlayer.setPlayer("black");
             GoServer.connect("black");
-
-            // TEST
-            try {
-                synchronized(goThread){
-                goThread.wait();
+            if (otherPlayer == null)
+                otherPlayer = GoServer.getFirstWhiteSleeper();
+            if (otherPlayer != null) {
+                synchronized (otherPlayer) {
+                    otherPlayer.notify();
                 }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            } else {
+                synchronized (myPlayer) {
+                    myPlayer.wait();
+
+                }
             }
-            goThread.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
+            // po tym jak bialy gracz mnie obudzil, musze ustawic otherplayer na tego kto mnie obbudzil
+            // a ten kto mnie obudzil ma mnie jako otherplayer
+            if (otherPlayer == null)
+                otherPlayer = GoServer.findOther(myPlayer);
+            // bo teraz juz nie jest nullem
+            myPlayer.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
             System.out.println("black player connected");
-            //
+            // Przejdź do stanu BlackTurn
+            myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
         } else {
-            goThread.out.println("JOIN_FAILED_RESPONSE$0");
+            myPlayer.out.println("JOIN_FAILED_RESPONSE$0");
         }
     }
 
     @Override
-    public void handleWhitePick() {
-        // ustawiam swoj kolor na bialy. czekam dopoki każdy z graczy nie ma ustawionego koloru (ide do waiting state), w waiting state odpowiadam na nic
+    public void handleWhitePick() throws InterruptedException {
         if (!GoServer.isWhiteConnected()) {
-            goThread.setPlayer(StoneColor.WHITE);
+            myPlayer.setPlayer("white");
             GoServer.connect("white");
-            goThread.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
+            if (otherPlayer == null)
+                otherPlayer = GoServer.getFirstBlackSleeper();
+            if (otherPlayer != null) {
+                // jesli jest jakis czekający czarny gracz to go budzę
+                synchronized (otherPlayer) {
+                    otherPlayer.notify();
+                }
+            } else {
+                // jak nie ma czekającego czarnego gracza to czekam aż czarny gracz mnie obudzi
+                synchronized (myPlayer) {
+                    myPlayer.wait();
+                }
+            }
+            // znajdz kto mnie ma
+            if (otherPlayer == null)
+                otherPlayer = GoServer.findOther(myPlayer);
+            // czarny gracz mnie obudzil
+            myPlayer.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
             System.out.println("white player connected");
-            synchronized(GoServer.threads.get(0)){
-            GoServer.threads.get(0).notify();}
+            // przejdź do stanu BlackTurn
+            myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
         } else {
-            goThread.out.println("JOIN_FAILED_RESPONSE$0");
+            myPlayer.out.println("JOIN_FAILED_RESPONSE$0");
         }
     }
 
     @Override
-    public void handlePlace() {
-        goThread.out.println("WAIT_RESPONSE$"+goThread.getPlayerString());
+    public void handlePlace(String command) {
+        myPlayer.out.println("COLOR_PICK_RESPONSE$" + myPlayer.getPlayerString());
     }
 
     @Override
     public void handleSkip() {
-        goThread.out.println("WAIT_RESPONSE$"+goThread.getPlayerString());
+        myPlayer.out.println("COLOR_PICK_RESPONSE$" + myPlayer.getPlayerString());
     }
 
     @Override
     public void handleExit() {
-        goThread.out.println("DISCONNECT_RESPONSE$0");
+        myPlayer.out.println("DISCONNECT_RESPONSE$0");
         System.out.println("client disconnected");
     }
 
     @Override
     public void handleInvalid() {
-        goThread.out.println("INVALID_RESPONSE$0");
+        myPlayer.out.println("INVALID_RESPONSE$0");
         System.out.println("invalid command");
     }
 }

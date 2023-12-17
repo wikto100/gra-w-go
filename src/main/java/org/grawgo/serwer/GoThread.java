@@ -24,7 +24,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
         // zaczytaj stan planszy z serwera (może można to zrobić jakoś lepiej)
         this.currBoard = GoServer.getBoard();
         this.serverParser = ServerCommandParser.getInstance();
-        this.currState = new ColorPickingState(this);
+        this.currState = new ColorPickingState(this, null);
         // w zaleznosci od tego jaki jest stan, ustaw responsy
     }
 
@@ -38,16 +38,6 @@ public class GoThread extends Thread implements ServerCommandInterface {
             String command;
             String parsedCommand;
             String response;
-            int[] coords;
-            command = in.readLine();
-            parsedCommand = serverParser.parseCommand(command);
-            //TODO czekaj na 2 graczy
-            //// STAN WAIT_FOR_PLAYERS
-            if (parsedCommand.equals("white")) {
-                currState.handleWhitePick();
-            } else if (parsedCommand.equals("black")) {
-                currState.handleBlackPick();
-            }
             ////
             game:
             while (true) {
@@ -55,16 +45,15 @@ public class GoThread extends Thread implements ServerCommandInterface {
                 command = in.readLine();
                 parsedCommand = serverParser.parseCommand(command);
                 switch (parsedCommand) {
+                    case "white":
+                        currState.handleWhitePick();
+                    case "black":
+                        currState.handleBlackPick();
                     case "place":
-                        // w colorpickingstate NIC, waitingstate nic, blackturn tylko jesli moj kolor to black
-                        //TODO: wyswietl plansze po ruchu przeciwnika
-                        coords = serverParser.parseCoords(command);
-                        currBoard.placeStone(coords, player);
-                        //TODO: znajdz zbite piony
-                        response = serverParser.parseOutput(currBoard);
-                        out.println(response);
+                        currState.handlePlace(command);
                         break;
                     case "skip":
+                        // nie ruszam ci tego, przenieś do odp metod
                         //TODO sprawdz czy poprzedni ruch to skip
                         response = currBoard.skip();
                         if (response.equals("SKIP_RESPONSE$0")) {
@@ -81,31 +70,34 @@ public class GoThread extends Thread implements ServerCommandInterface {
                         }
                         break;
                     case "exit":
-                        response = "DISCONNECT_RESPONSE$0";
-                        out.println(response);
-                        System.out.println("client disconnected");
-                        // TODO lepszy exit
+                        currState.handleExit();
                         break game; // <- czy to na pewno jest bezpieczne?
                     default:
-                        response = "INVALID_RESPONSE$0";
-                        out.println(response);
-                        System.out.println("invalid command");
+                        currState.handleInvalid();
                         break;
                 }
             }
         } catch (IOException ex) {
             System.out.println("Server exception: " + ex.getMessage());
             ex.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void setPlayer(StoneColor player) {
-        this.player = player;
+    // to wszystko niech idzie do jakiejs klasy ThreadUtil
+    public void setPlayer(String player) {
+        if (player.equals("black")) {
+            this.player = StoneColor.BLACK;
+        } else if (player.equals("white")) {
+            this.player = StoneColor.WHITE;
+        }
     }
-    public String getPlayerString(){
-        if(this.player == null){
+
+    public String getPlayerString() {
+        if (this.player == null) {
             return "NULL";
-        }else if (this.player.equals(StoneColor.BLACK)){
+        } else if (this.player.equals(StoneColor.BLACK)) {
             return "BLACK";
         } else if (this.player.equals(StoneColor.WHITE)) {
             return "WHITE";
@@ -113,23 +105,27 @@ public class GoThread extends Thread implements ServerCommandInterface {
         return "NULL";
     }
 
+    public GoThread getOpponent() {
+        return this.currState.getOtherPlayer();
+    }
+
     public void changeState(ThreadState threadState) {
         this.currState = threadState;
     }
 
     @Override
-    public void handleBlackPick() {
+    public void handleBlackPick() throws InterruptedException {
         currState.handleBlackPick();
     }
 
     @Override
-    public void handleWhitePick() {
+    public void handleWhitePick() throws InterruptedException {
         currState.handleWhitePick();
     }
 
     @Override
-    public void handlePlace() {
-        currState.handlePlace();
+    public void handlePlace(String command) {
+        currState.handlePlace(command);
     }
 
     @Override

@@ -32,6 +32,8 @@ public class GoClient {
             System.out.println("Playing as " + color);
         } else if (command.equals("JOIN_FAILED_RESPONSE")) {
             System.out.println("Select the other color: ");
+        } else if (command.equals("COLOR_PICK_RESPONSE")) {
+            System.out.println("Pick black/white: ");
         }
     }
     private static boolean play() throws IOException{
@@ -39,7 +41,7 @@ public class GoClient {
         String parsedUserInput;
         String response;
         String command;
-        System.out.print("Input command: ");
+        System.out.print("Input move: ");
         userInput = clientIn.readLine();
         parsedUserInput = clientParser.parseInputFromUser(userInput);
         clientOut.println(parsedUserInput);
@@ -58,6 +60,9 @@ public class GoClient {
             case "PLACE_RESPONSE":
                 System.out.println("___________ TEST ________________");
                 clientParser.parseBoardFromServer(response);
+                return true;
+            case "INVALID_TURN_RESPONSE":
+                System.out.println("Not your turn! ");
                 return true;
             case "END_GAME_RESPONSE":
                 System.out.println("THE GAME HAS ENDED");

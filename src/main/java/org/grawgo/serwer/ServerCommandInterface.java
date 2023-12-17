@@ -2,10 +2,15 @@ package org.grawgo.serwer;
 
 public interface ServerCommandInterface {
     // dobrze by bylo miec wszystkie komendy tutaj
-    void handleBlackPick();
-    void handleWhitePick();
-    void handlePlace();
+    void handleBlackPick() throws InterruptedException;
+
+    void handleWhitePick() throws InterruptedException;
+
+    void handlePlace(String command);
+
     void handleSkip();
+
     void handleExit();
+
     void handleInvalid();
 }
