@@ -13,7 +13,7 @@ public class ColorPickingState extends ThreadState {
         if (!GoServer.isBlackConnected()) {
             myPlayer.setPlayer("black");
             GoServer.connect("black");
-            if(otherPlayer == null)
+            if (otherPlayer == null)
                 otherPlayer = GoServer.getFirstWhiteSleeper();
             if (otherPlayer != null) {
                 synchronized (otherPlayer) {
@@ -25,10 +25,13 @@ public class ColorPickingState extends ThreadState {
 
                 }
             }
+            Thread.sleep(100);
             // po tym jak bialy gracz mnie obudzil, musze ustawic otherplayer na tego kto mnie obbudzil
             // a ten kto mnie obudzil ma mnie jako otherplayer
-            if (otherPlayer == null)
-                otherPlayer = GoServer.findOther(myPlayer);
+            synchronized (myPlayer) {
+                if (otherPlayer == null)
+                    otherPlayer = GoServer.findOther(myPlayer);
+            }
             // bo teraz juz nie jest nullem
             myPlayer.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
             System.out.println("black player connected");
@@ -44,7 +47,7 @@ public class ColorPickingState extends ThreadState {
         if (!GoServer.isWhiteConnected()) {
             myPlayer.setPlayer("white");
             GoServer.connect("white");
-            if(otherPlayer == null)
+            if (otherPlayer == null)
                 otherPlayer = GoServer.getFirstBlackSleeper();
             if (otherPlayer != null) {
                 // jesli jest jakis czekający czarny gracz to go budzę
@@ -57,9 +60,12 @@ public class ColorPickingState extends ThreadState {
                     myPlayer.wait();
                 }
             }
+            Thread.sleep(100);
             // znajdz kto mnie ma
-            if (otherPlayer == null)
-                otherPlayer = GoServer.findOther(myPlayer);
+            synchronized (myPlayer) {
+                if (otherPlayer == null)
+                    otherPlayer = GoServer.findOther(myPlayer);
+            }
             // czarny gracz mnie obudzil
             myPlayer.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
             System.out.println("white player connected");
