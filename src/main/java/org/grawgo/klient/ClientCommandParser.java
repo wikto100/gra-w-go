@@ -32,11 +32,14 @@ public class ClientCommandParser {
         return data.split("\\|")[field];
     }
 
-    void parseBoardFromServer(String response) {
+    String parseBoardFromServer(String response) {
+        StringBuilder dataBuilder = new StringBuilder();
         String data = response.split("\\$")[1];
         String[] splitData = data.split("\\|");
         for (String splitDatum : splitData) {
-            System.out.println(splitDatum);
+            dataBuilder.append(splitDatum);
+            dataBuilder.append('\n');
         }
+        return dataBuilder.toString();
     }
 }

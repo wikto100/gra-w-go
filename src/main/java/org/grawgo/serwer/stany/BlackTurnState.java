@@ -31,6 +31,7 @@ public class BlackTurnState extends ThreadState {
             coords = serverParser.parseCoords(command);
             // to jest bardzo brzydkie
             GoServer.getBoard().placeStone(coords, StoneColor.BLACK);
+
             response = serverParser.parseOutput(GoServer.getBoard());
             myPlayer.out.println(response);
             // todo: po moim ruchu wyświetl przeciwnikowi plansze
