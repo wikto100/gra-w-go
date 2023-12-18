@@ -32,9 +32,10 @@ public class WhiteTurnState extends ThreadState {
             myPlayer.out.println(response);
             // todo: po moim ruchu wyświetl przeciwnikowi plansze
             // otherPlayer.out.println(response);
-
-            otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
-            myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
+            synchronized (myPlayer) {
+                otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
+                myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
+            }
         } else {
             myPlayer.out.println("INVALID_TURN_RESPONSE$");
         }

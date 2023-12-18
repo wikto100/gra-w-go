@@ -34,10 +34,12 @@ public class BlackTurnState extends ThreadState {
 
             response = serverParser.parseOutput(GoServer.getBoard());
             myPlayer.out.println(response);
-            // todo: po moim ruchu wyświetl przeciwnikowi plansze
+            // todo: po moim ruchu wyświetl przeciwnikowi plansze (przeciwnik musi wyslac wczesniej zapytanie)
             //otherPlayer.out.println(response);
+            synchronized(myPlayer){
             otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
             myPlayer.changeState(new WhiteTurnState(myPlayer, otherPlayer));
+            }
         } else {
             myPlayer.out.println("INVALID_TURN_RESPONSE$");
         }

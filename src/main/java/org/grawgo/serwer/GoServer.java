@@ -73,10 +73,10 @@ public class GoServer {
         }
         return null;
     }
-
+// będziemy mieli threads jako pary graczy na więcej graczy w 2 iteracji
     public static GoThread findOther(GoThread me) {
         for (GoThread player : threads) {
-            if (player.getOpponent().equals(me))
+            if (!player.equals(me))
                 return player;
         }
         return null;

@@ -7,7 +7,6 @@ public class ColorPickingState extends ThreadState {
     public ColorPickingState(GoThread player1, GoThread player2) {
         super(player1, player2);
     }
-
     @Override
     public void handleBlackPick() throws InterruptedException {
         if (!GoServer.isBlackConnected()) {
@@ -22,16 +21,9 @@ public class ColorPickingState extends ThreadState {
             } else {
                 synchronized (myPlayer) {
                     myPlayer.wait();
+                    otherPlayer = GoServer.findOther(myPlayer);
                 }
             }
-            //Thread.sleep(100); <- JESLI THREAD sie WYWALA to odkomentowac to
-            // po tym jak bialy gracz mnie obudzil, musze ustawic otherplayer na tego kto mnie obbudzil
-            // a ten kto mnie obudzil ma mnie jako otherplayer
-            synchronized (myPlayer) {
-                if (otherPlayer == null)
-                    otherPlayer = GoServer.findOther(myPlayer);
-            }
-            // bo teraz juz nie jest nullem
             myPlayer.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
             System.out.println("black player connected");
             // Przejdź do stanu BlackTurn
@@ -57,14 +49,11 @@ public class ColorPickingState extends ThreadState {
                 // jak nie ma czekającego czarnego gracza to czekam aż czarny gracz mnie obudzi
                 synchronized (myPlayer) {
                     myPlayer.wait();
+                    otherPlayer = GoServer.findOther(myPlayer);
                 }
             }
             //Thread.sleep(100); <- JESLI THREAD-0 sie WYWALA to odkomentowac to
             // znajdz kto mnie ma
-            synchronized (myPlayer) {
-                if (otherPlayer == null)
-                    otherPlayer = GoServer.findOther(myPlayer);
-            }
             // czarny gracz mnie obudzil
             myPlayer.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
             System.out.println("white player connected");
@@ -74,6 +63,7 @@ public class ColorPickingState extends ThreadState {
             myPlayer.out.println("JOIN_FAILED_RESPONSE$0");
         }
     }
+
 
     @Override
     public void handlePlace(String command) {

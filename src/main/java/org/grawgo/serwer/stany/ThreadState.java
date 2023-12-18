@@ -14,8 +14,4 @@ public abstract class ThreadState implements ServerCommandInterface {
         this.otherPlayer = otherPlayer;
         this.serverParser = ServerCommandParser.getInstance();
     }
-
-    public GoThread getOtherPlayer() {
-        return otherPlayer;
-    }
 }

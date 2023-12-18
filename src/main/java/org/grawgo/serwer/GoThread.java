@@ -107,9 +107,6 @@ public class GoThread extends Thread implements ServerCommandInterface {
         return "NULL";
     }
 
-    public GoThread getOpponent() {
-        return this.currState.getOtherPlayer();
-    }
 
     public void changeState(ThreadState threadState) {
         this.currState = threadState;
