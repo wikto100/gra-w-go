@@ -29,11 +29,18 @@ public class GoClient {
         userInput = clientIn.readLine();
         parsedUserInput = clientParser.parseInputFromUser(userInput);
         clientOut.println(parsedUserInput);
+        // albo to xor
         response = inFromServer.readLine();
         command = clientParser.parseCommandFromServer(response);
         switch (command) {
             case "JOIN_SUCCESSFUL_RESPONSE":
                 System.out.println("Playing as " + userInput);
+                if(userInput.equals("white")){
+                    System.out.println("Waiting for black players move...");
+                }
+                response = inFromServer.readLine();
+                System.out.println(clientParser.parseBoardFromServer(response));
+
                 joinedFlag = true;
                 return true;
             case "JOIN_FAILED_RESPONSE":
@@ -54,6 +61,11 @@ public class GoClient {
             case "PLACE_RESPONSE":
                 System.out.println("___________ TEST ________________");
                 System.out.println(clientParser.parseBoardFromServer(response));
+                System.out.println("OK! Waiting for other players move...");
+                // xor
+                response = inFromServer.readLine();
+                System.out.println(clientParser.parseBoardFromServer(response));
+
                 return true;
             case "INVALID_TURN_RESPONSE":
                 System.out.println("Not your turn!");

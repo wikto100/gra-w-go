@@ -49,13 +49,12 @@ public class ColorPickingState extends ThreadState {
                 // jak nie ma czekającego czarnego gracza to czekam aż czarny gracz mnie obudzi
                 synchronized (myPlayer) {
                     myPlayer.wait();
+                    // i szukam 'tego kto mnie obudzil'
                     otherPlayer = GoServer.findOther(myPlayer);
                 }
             }
-            //Thread.sleep(100); <- JESLI THREAD-0 sie WYWALA to odkomentowac to
-            // znajdz kto mnie ma
-            // czarny gracz mnie obudzil
             myPlayer.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
+            otherPlayer.out.println(serverParser.parseOutput(GoServer.getBoard()));
             System.out.println("white player connected");
             // przejdź do stanu BlackTurn
             myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
