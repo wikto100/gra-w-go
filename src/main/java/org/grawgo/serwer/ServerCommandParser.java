@@ -37,9 +37,7 @@ public class ServerCommandParser {
         return coords;
     }
 
-    public String parseOutput(Board board) { // nie wiem czy podawanie calej planszy jest tu dobrym pomyslem
-        String response = "PLACE_RESPONSE$";
-        response += board.printBoard();
-        return response;
+    public String parseBoard(String commandToSend) { // nie wiem czy podawanie calej planszy jest tu dobrym pomyslem
+        return commandToSend+GoServer.getBoard().printBoard();
     }
 }

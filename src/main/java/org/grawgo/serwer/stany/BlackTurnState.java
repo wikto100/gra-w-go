@@ -26,15 +26,15 @@ public class BlackTurnState extends ThreadState {
         int[] coords;
         String response;
         // tylko jesli czarny
-        if (myPlayer.getPlayerString().equals("BLACK")) {
+        if (myPlayer.getPlayerString().equals("black")) {
             // kod ktory jest w goThread (mniejwiecej)
             coords = serverParser.parseCoords(command);
             // to jest bardzo brzydkie
             GoServer.getBoard().placeStone(coords, StoneColor.BLACK);
 
-            response = serverParser.parseOutput(GoServer.getBoard());
+            response = serverParser.parseBoard("PLACE_RESPONSE$");
             myPlayer.out.println(response);
-            // todo: po moim ruchu wyświetl przeciwnikowi plansze (przeciwnik musi wyslac wczesniej zapytanie)
+
             otherPlayer.out.println(response);
 
             otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
@@ -48,7 +48,7 @@ public class BlackTurnState extends ThreadState {
     @Override
     public void handleSkip() {
         // tylko jesli czarny
-        if (myPlayer.getPlayerString().equals("BLACK")) {
+        if (myPlayer.getPlayerString().equals("black")) {
             // kod ktory jest w goThread (mniejwiecej)
 
             //

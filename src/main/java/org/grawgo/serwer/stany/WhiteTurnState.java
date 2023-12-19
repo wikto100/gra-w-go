@@ -23,14 +23,14 @@ public class WhiteTurnState extends ThreadState {
     public void handlePlace(String command) {
         int[] coords;
         String response;
-        if (myPlayer.getPlayerString().equals("WHITE")) {
+        if (myPlayer.getPlayerString().equals("white")) {
             // kod ktory jest w goThread (mniejwiecej)
             coords = serverParser.parseCoords(command);
             // to jest bardzo brzydkie
             GoServer.getBoard().placeStone(coords, StoneColor.WHITE);
-            response = serverParser.parseOutput(GoServer.getBoard());
+            response = serverParser.parseBoard("PLACE_RESPONSE$");
             myPlayer.out.println(response);
-            // todo: po moim ruchu wyświetl przeciwnikowi plansze
+
              otherPlayer.out.println(response);
             synchronized (myPlayer) {
                 otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
@@ -43,7 +43,7 @@ public class WhiteTurnState extends ThreadState {
 
     @Override
     public void handleSkip() {
-        if (myPlayer.getPlayerString().equals("WHITE")) {
+        if (myPlayer.getPlayerString().equals("white")) {
             // kod ktory jest w goThread (mniejwiecej)
 
             //

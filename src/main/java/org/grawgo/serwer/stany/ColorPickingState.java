@@ -1,5 +1,6 @@
 package org.grawgo.serwer.stany;
 
+import org.grawgo.core.StoneColor;
 import org.grawgo.serwer.GoServer;
 import org.grawgo.serwer.GoThread;
 
@@ -7,6 +8,7 @@ public class ColorPickingState extends ThreadState {
     public ColorPickingState(GoThread player1, GoThread player2) {
         super(player1, player2);
     }
+
     @Override
     public void handleBlackPick() throws InterruptedException {
         if (!GoServer.isBlackConnected()) {
@@ -54,7 +56,7 @@ public class ColorPickingState extends ThreadState {
                 }
             }
             myPlayer.out.println("JOIN_SUCCESSFUL_RESPONSE$0");
-            otherPlayer.out.println(serverParser.parseOutput(GoServer.getBoard()));
+            otherPlayer.out.println(serverParser.parseBoard("PLACE_RESPOSE$"));
             System.out.println("white player connected");
             // przejdź do stanu BlackTurn
             myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));

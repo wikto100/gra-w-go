@@ -10,10 +10,9 @@ import java.net.*;
 
 public class GoThread extends Thread implements ServerCommandInterface {
     private final Socket socket;
-    private final Board currBoard;
     private final ServerCommandParser serverParser;
     private ThreadState currState;
-    StoneColor player = null;
+    private StoneColor player;
     InputStream input;
     BufferedReader in;
     OutputStream output;
@@ -22,9 +21,9 @@ public class GoThread extends Thread implements ServerCommandInterface {
     public GoThread(Socket socket) {
         this.socket = socket;
         // zaczytaj stan planszy z serwera (może można to zrobić jakoś lepiej)
-        this.currBoard = GoServer.getBoard();
         this.serverParser = ServerCommandParser.getInstance();
         this.currState = new ColorPickingState(this, null);
+        this.player = null;
         // w zaleznosci od tego jaki jest stan, ustaw responsy
     }
 
@@ -57,7 +56,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
                     case "skip":
                         // nie ruszam ci tego, przenieś do odp metod
                         //TODO sprawdz czy poprzedni ruch to skip
-                        response = currBoard.skip();
+                        response = GoServer.getBoard().skip();
                         if (response.equals("SKIP_RESPONSE$0")) {
                             out.println(response);
                             System.out.println("skipped turn");
@@ -95,19 +94,9 @@ public class GoThread extends Thread implements ServerCommandInterface {
             this.player = StoneColor.WHITE;
         }
     }
-
     public String getPlayerString() {
-        if (this.player == null) {
-            return "NULL";
-        } else if (this.player.equals(StoneColor.BLACK)) {
-            return "BLACK";
-        } else if (this.player.equals(StoneColor.WHITE)) {
-            return "WHITE";
-        }
-        return "NULL";
+        return this.player.name().toLowerCase();
     }
-
-
     public void changeState(ThreadState threadState) {
         this.currState = threadState;
     }

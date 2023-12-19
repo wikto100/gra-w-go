@@ -1,8 +1,6 @@
 package org.grawgo.serwer;
 
 import org.grawgo.core.Board;
-// usun to
-import org.grawgo.core.StoneColor;
 
 import java.io.*;
 import java.net.*;
@@ -58,7 +56,7 @@ public class GoServer {
     // zwroc pierwszego czarnego ktory spi
     public static GoThread getFirstBlackSleeper() {
         for (GoThread player : threads) {
-            if (player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("BLACK")) {
+            if (player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("black")) {
                 return player;
             }
         }
@@ -67,7 +65,7 @@ public class GoServer {
 
     public static GoThread getFirstWhiteSleeper() {
         for (GoThread player : threads) {
-            if (player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("WHITE")) {
+            if (player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("white")) {
                 return player;
             }
         }
@@ -89,4 +87,5 @@ public class GoServer {
     public static Boolean isBlackConnected() {
         return blackConnected;
     }
+
 }

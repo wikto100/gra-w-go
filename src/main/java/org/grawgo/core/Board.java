@@ -46,19 +46,30 @@ public class Board implements Rules {
 
     public String printBoard() {
         StringBuilder stringBuilder = new StringBuilder();
+
+        for(int lbl = 1; lbl <= this.size; lbl++ ){
+            if(lbl < 10){
+                stringBuilder.append(' ').append(lbl).append(' ');
+            } else{
+                stringBuilder.append(lbl).append(' ');
+            }
+        }
+        stringBuilder.append('|');
         for (int x = 0; x < this.size; x++) {
             for (int y = 0; y < this.size; y++) {
                 if (stones[x][y] != null) {
                     if (stones[x][y].getStoneColor() == StoneColor.WHITE) {
-                        stringBuilder.append('W');
+                        stringBuilder.append(" ⬤ ");
                     } else {
-                        stringBuilder.append('B');
+                        stringBuilder.append(" ◯ ");
                     }
                 }else{
-                    stringBuilder.append('+');
+                    stringBuilder.append(" ┼ ");
                 }
             }
+            stringBuilder.append(" ").append(x + 1);
             stringBuilder.append('|');
+
 
         }
         return stringBuilder.toString();
