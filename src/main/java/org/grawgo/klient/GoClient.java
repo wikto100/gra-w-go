@@ -10,6 +10,7 @@ public class GoClient {
     private static ClientCommandParser clientParser;
     private static Socket socket;
     private static boolean joinedFlag = false;
+
     private static void joinServer() throws IOException {
         socket = new Socket("localhost", 4444);
         clientOut = new PrintWriter(socket.getOutputStream(), true);
@@ -23,7 +24,7 @@ public class GoClient {
         String parsedUserInput;
         String response;
         String command;
-        String userPrompt = joinedFlag ? "Input move: ": "Pick color (&wait): ";
+        String userPrompt = joinedFlag ? "Input move: " : "Pick color (&wait): ";
         System.out.print(userPrompt);
         userInput = clientIn.readLine();
         parsedUserInput = clientParser.parseInputFromUser(userInput);
@@ -34,10 +35,14 @@ public class GoClient {
             case "JOIN_SUCCESSFUL_RESPONSE":
                 System.out.println("Playing as " + userInput);
                 System.out.println(" __________________________ GO ___________________________");
-                if(userInput.equals("white")){
+                if (userInput.equals("white")) {
                     System.out.println("Waiting for black players move...");
                 }
                 response = inFromServer.readLine();
+                if (clientParser.parseCommandFromServer(response).equals("DISCONNECT_RESPONSE")) {
+                    System.out.println("OPPONENT DISCONNECTED");
+                    return false;
+                }
                 System.out.print(clientParser.parseBoardFromServer(response));
                 System.out.println(" __________________________ ** ___________________________");
                 joinedFlag = true;
@@ -59,6 +64,15 @@ public class GoClient {
                 System.out.println(" ___________________________ ** ___________________________");
                 System.out.println("OK! Waiting for other players move...");
                 response = inFromServer.readLine();
+                if (clientParser.parseCommandFromServer(response).equals("END_GAME_RESPONSE")) {
+                    System.out.println("THE GAME HAS ENDED");
+                    System.out.println("WHITE: " + clientParser.parseDataFromServer(response, 0) + " BLACK: " + clientParser.parseDataFromServer(response, 1));
+                    return false;
+                }
+                else if (clientParser.parseCommandFromServer(response).equals("DISCONNECT_RESPONSE")) {
+                    System.out.println("OPPONENT DISCONNECTED");
+                    return false;
+                }
                 System.out.println(clientParser.parseBoardFromServer(response));
                 System.out.println(" __________________________ ** ___________________________");
                 return true;
@@ -67,6 +81,10 @@ public class GoClient {
                 System.out.println(" ___________________________ ** ___________________________");
                 System.out.println("OK! Waiting for other players move...");
                 response = inFromServer.readLine();
+                if (clientParser.parseCommandFromServer(response).equals("DISCONNECT_RESPONSE")) {
+                    System.out.println("OPPONENT DISCONNECTED");
+                    return false;
+                }
                 System.out.print(clientParser.parseBoardFromServer(response));
                 System.out.println(" __________________________ ** ___________________________");
                 return true;

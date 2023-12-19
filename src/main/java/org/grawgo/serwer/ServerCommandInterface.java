@@ -10,7 +10,7 @@ public interface ServerCommandInterface {
 
     void handleSkip();
 
-    void handleExit();
+    void handleExit() throws InterruptedException;
 
     void handleInvalid();
 }

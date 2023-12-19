@@ -224,5 +224,4 @@ public class Board implements Rules {
         }
         return stringBuilder.toString();
     }
-
 }

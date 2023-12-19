@@ -55,8 +55,7 @@ public class BlackTurnState extends ThreadState {
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
                 System.out.println("skipped turn");
-            }
-            else if (response.equals("END_GAME_RESPONSE$")) {
+            } else if (response.equals("END_GAME_RESPONSE$")) {
                 //TODO: policz wynik
                 //TODO: szansa odrzucenia konca gry
                 //TODO: zakoncz gre u obu graczy
@@ -64,6 +63,9 @@ public class BlackTurnState extends ThreadState {
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
                 System.out.println("Ending game");
+                myPlayer.setRunning(false);
+                otherPlayer.setRunning(false);
+                return;
             }
             otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
             myPlayer.changeState(new WhiteTurnState(myPlayer, otherPlayer));
@@ -73,9 +75,16 @@ public class BlackTurnState extends ThreadState {
     }
 
     @Override
-    public void handleExit() {
+    public void handleExit() throws InterruptedException {
         // ok i disconnect
         myPlayer.out.println("DISCONNECT_RESPONSE$0");
+        if (otherPlayer != null)
+            otherPlayer.out.println("DISCONNECT_RESPONSE$0");
+        System.out.println("disconnecting...");
+        Thread.sleep(1000);
+        myPlayer.setRunning(false);
+        if (otherPlayer != null)
+            otherPlayer.setRunning(false);
     }
 
     @Override

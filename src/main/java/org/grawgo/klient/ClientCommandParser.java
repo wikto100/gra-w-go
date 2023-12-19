@@ -3,7 +3,7 @@ package org.grawgo.klient;
 //TODO parser wiadomosci z serwera
 public class ClientCommandParser {
     String parseInputFromUser(String input) {
-        String[] splitInput = input.split(" ");
+        String[] splitInput = input.split("\\s+");
         StringBuilder dataBuilder = new StringBuilder();
         String command = splitInput[0];
         int ARGNO;

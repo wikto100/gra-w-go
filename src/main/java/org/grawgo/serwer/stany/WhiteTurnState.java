@@ -50,13 +50,15 @@ public class WhiteTurnState extends ThreadState {
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
                 System.out.println("skipped turn");
-            }
-            else if (response.equals("END_GAME_RESPONSE$")) {
+            } else if (response.equals("END_GAME_RESPONSE$")) {
                 //TODO: skip dziala koniec gry jest do zrobienia
                 response += GoServer.getBoard().getScores();
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
                 System.out.println("Ending game");
+                myPlayer.setRunning(false);
+                otherPlayer.setRunning(false);
+                return;
             }
             otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
             myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
@@ -66,9 +68,16 @@ public class WhiteTurnState extends ThreadState {
     }
 
     @Override
-    public void handleExit() {
+    public void handleExit() throws InterruptedException {
         myPlayer.out.println("DISCONNECT_RESPONSE$0");
-        System.out.println("client disconnected");
+        if (otherPlayer != null)
+            otherPlayer.out.println("DISCONNECT_RESPONSE$0");
+        System.out.println("disconnecting...");
+        Thread.sleep(1000);
+        myPlayer.setRunning(false);
+        if (otherPlayer != null)
+            otherPlayer.setRunning(false);
+
     }
 
     @Override

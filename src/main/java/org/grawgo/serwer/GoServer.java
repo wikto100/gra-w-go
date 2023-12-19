@@ -49,8 +49,20 @@ public class GoServer {
         }
     }
 
-    public static void disconnect(String player) {
-        //TODO: eeee
+    public static void reset() {
+        threads.clear();
+        whiteConnected = false;
+        blackConnected = false;
+        board = new Board(19);
+    }
+
+    public static void reset(GoThread player) {
+        if (player.getPlayerString().equals("white")) {
+            whiteConnected = false;
+        } else {
+            blackConnected = false;
+        }
+        threads.remove(player);
     }
 
     // zwroc pierwszego czarnego ktory spi
@@ -71,7 +83,8 @@ public class GoServer {
         }
         return null;
     }
-// będziemy mieli threads jako pary graczy na więcej graczy w 2 iteracji
+
+    // będziemy mieli threads jako pary graczy na więcej graczy w 2 iteracji
     public static GoThread findOther(GoThread me) {
         for (GoThread player : threads) {
             if (!player.equals(me))
