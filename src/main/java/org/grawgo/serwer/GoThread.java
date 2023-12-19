@@ -56,7 +56,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
                     case "skip":
                         // nie ruszam ci tego, przenieś do odp metod
                         //TODO sprawdz czy poprzedni ruch to skip
-                        response = GoServer.getBoard().skip();
+                        /**response = GoServer.getBoard().skip();
                         if (response.equals("SKIP_RESPONSE$0")) {
                             out.println(response);
                             System.out.println("skipped turn");
@@ -67,8 +67,8 @@ public class GoThread extends Thread implements ServerCommandInterface {
                             out.println(response);
                             System.out.println("Ending game");
                             //TODO: lepszy exit
-                            break game;
-                        }
+                            break game;**/
+                        currState.handleSkip();
                         break;
                     case "exit":
                         currState.handleExit();

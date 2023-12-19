@@ -34,7 +34,6 @@ public class BlackTurnState extends ThreadState {
 
             response = serverParser.parseBoard("PLACE_RESPONSE$");
             myPlayer.out.println(response);
-
             otherPlayer.out.println(response);
 
             otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
@@ -48,12 +47,24 @@ public class BlackTurnState extends ThreadState {
     @Override
     public void handleSkip() {
         // tylko jesli czarny
+        String response;
         if (myPlayer.getPlayerString().equals("black")) {
-            // kod ktory jest w goThread (mniejwiecej)
-
-            //
+            response = GoServer.getBoard().skip();
+            if (response.equals("SKIP_RESPONSE$0")) {
+                myPlayer.out.println(response);
+                otherPlayer.out.println(response);
+                System.out.println("skipped turn");
+            }
+            else if (response.equals("END_GAME_RESPONSE$")) {
+                //TODO: policz wynik
+                //TODO: szansa odrzucenia konca gry
+                //TODO: zakoncz gre u obu graczy
+                response += GoServer.getBoard().getScores();
+                myPlayer.out.println(response);
+                otherPlayer.out.println(response);
+                System.out.println("Ending game");
+            }
             otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
-            // todo: po moim ruchu wyświetl przeciwnikowi plansze
             myPlayer.changeState(new WhiteTurnState(myPlayer, otherPlayer));
         } else {
             myPlayer.out.println("INVALID_TURN_RESPONSE$");

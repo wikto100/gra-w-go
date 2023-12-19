@@ -28,14 +28,13 @@ public class WhiteTurnState extends ThreadState {
             coords = serverParser.parseCoords(command);
             // to jest bardzo brzydkie
             GoServer.getBoard().placeStone(coords, StoneColor.WHITE, StoneColor.BLACK);
+
             response = serverParser.parseBoard("PLACE_RESPONSE$");
             myPlayer.out.println(response);
+            otherPlayer.out.println(response);
 
-             otherPlayer.out.println(response);
-            synchronized (myPlayer) {
-                otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
-                myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
-            }
+            otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
+            myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
         } else {
             myPlayer.out.println("INVALID_TURN_RESPONSE$");
         }
@@ -43,12 +42,22 @@ public class WhiteTurnState extends ThreadState {
 
     @Override
     public void handleSkip() {
+        String response;
         if (myPlayer.getPlayerString().equals("white")) {
-            // kod ktory jest w goThread (mniejwiecej)
-
-            //
+            response = GoServer.getBoard().skip();
+            if (response.equals("SKIP_RESPONSE$0")) {
+                myPlayer.out.println(response);
+                otherPlayer.out.println(response);
+                System.out.println("skipped turn");
+            }
+            else if (response.equals("END_GAME_RESPONSE$")) {
+                //TODO: skip dziala koniec gry jest do zrobienia
+                response += GoServer.getBoard().getScores();
+                myPlayer.out.println(response);
+                otherPlayer.out.println(response);
+                System.out.println("Ending game");
+            }
             otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
-            // todo: po moim ruchu wyświetl przeciwnikowi plansze
             myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
         } else {
             myPlayer.out.println("INVALID_TURN_RESPONSE$");

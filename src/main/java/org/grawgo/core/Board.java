@@ -5,10 +5,11 @@ package org.grawgo.core;
 // klasa statyczna współdzielona przez GoThready. Zaimplementujmy jakieś locki żeby było ok
 public class Board implements Rules {
     private final Stone[][] stones;
-    //TODO: zmieniaj currPlayer w zaleznosci od tego kto wykonal ruch (thread-safe) <-czy to musi byc thread-safe jezeli tylko jeden gracz naraz moze postawic kamien
     private final int size;
     private boolean previouslySkipped=false; // eeee
     private int turn=1;
+    private int whitePoints=0;
+    private int blackPoints=0;
 
     public Board(int size) {
         this.size = size;
@@ -16,19 +17,24 @@ public class Board implements Rules {
     }
 
     @Override
-    public boolean isLegal(int x, int y) {
-        //TODO: sprawdz oddechy kamienia
-        return ((x >= 0 && x < this.size) &&
-                (y >= 0 && y < this.size));
+    public boolean isLegal(int x, int y, StoneColor color) {
+        //TODO: ko (punkt 5 zasad)
+        if(isInBounds(x,y)==false){
+            return false;
+        }
+        else if(this.stones[x][y]!=null){
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public void placeStone(int[] coords, StoneColor stoneColor, StoneColor enemy){
+    public void placeStone(int[] coords, StoneColor color, StoneColor enemy){
         int x = coords[0];
         int y = coords[1];
-        System.out.println("Turn"+this.turn);
-        if (isLegal(x, y)) {
-            this.stones[x][y] = new Stone(stoneColor);
+        System.out.println("Turn "+this.turn);
+        if (isLegal(x, y, color)) {
+            this.stones[x][y] = new Stone(color);
             //Nie jestem pewien tego miejsca wywolywania ale inaczej trzeba by gdzies w state zapisac board
             if (x!=0){
                 if (this.isDead(x-1,y,enemy)==true){
@@ -50,10 +56,18 @@ public class Board implements Rules {
                     this.kill(x,y-1,enemy);
                 }
             }
-
-            this.previouslySkipped = false;
-            turn++;
+            if (this.isDead(x,y,color)==true){
+                this.stones[x][y]=null;
+                System.out.println("illegal move");
+                //TODO: zwroc komunikat o nieprawidlowym ruchu
+            }
+            else{
+                this.previouslySkipped = false;
+                this.turn++;
+                System.out.println("move accepted");
+            }
         } else {
+            System.out.println("illegal move");
             //TODO: zwroc komunikat o nieprawidlowym ruchu
         }
     }
@@ -117,6 +131,9 @@ public class Board implements Rules {
         Stone top,right,bottom,left;
         this.stones[x][y]=null;
 
+        if(ally==StoneColor.BLACK){this.whitePoints++;}
+        else{this.blackPoints++;}
+
         if(x!=0){top=this.stones[x-1][y];}
         else{top=null;}
         if(x!=this.size-1){bottom=this.stones[x+1][y];}
@@ -142,6 +159,7 @@ public class Board implements Rules {
 
     @Override
     public String skip(){
+        this.turn++;
         if (previouslySkipped){
             return "END_GAME_RESPONSE$";
         }
@@ -152,10 +170,17 @@ public class Board implements Rules {
     }
 
     public boolean isInBounds(int x,int y){
-        if(x>=0 && x<=this.size && y>=0 && y<=this.size){
+        if(x>=0 && x<=this.size-1 && y>=0 && y<=this.size-1){
             return true;
         }
         return false;
+    }
+
+    public String getScores(){
+        String res=String.valueOf(this.whitePoints);
+        res+="|";
+        res+=String.valueOf(this.blackPoints);
+        return res;
     }
 
     public String printBoard() {

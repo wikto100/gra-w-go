@@ -56,6 +56,10 @@ public class GoClient {
                 return true;
             case "SKIP_RESPONSE":
                 System.out.println("skipped turn");
+                System.out.println(" ___________________________ ** ___________________________");
+                System.out.println("OK! Waiting for other players move...");
+                response = inFromServer.readLine();
+                System.out.println(" __________________________ ** ___________________________");
                 return true;
             case "PLACE_RESPONSE":
                 System.out.print(clientParser.parseBoardFromServer(response));
