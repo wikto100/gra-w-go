@@ -12,7 +12,7 @@ public class ClientParserTest
     public void inputTest1()
     {
         String result;
-        String expected="place$1|1";
+        String expected="place$1|1|";
         result=testParser.parseInputFromUser("place 1 1");
         assertEquals(result,expected);
     }

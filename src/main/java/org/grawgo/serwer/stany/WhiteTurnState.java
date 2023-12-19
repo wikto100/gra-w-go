@@ -27,7 +27,7 @@ public class WhiteTurnState extends ThreadState {
             // kod ktory jest w goThread (mniejwiecej)
             coords = serverParser.parseCoords(command);
             // to jest bardzo brzydkie
-            GoServer.getBoard().placeStone(coords, StoneColor.WHITE);
+            GoServer.getBoard().placeStone(coords, StoneColor.WHITE, StoneColor.BLACK);
             response = serverParser.parseBoard("PLACE_RESPONSE$");
             myPlayer.out.println(response);
 

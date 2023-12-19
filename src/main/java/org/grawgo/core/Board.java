@@ -8,6 +8,7 @@ public class Board implements Rules {
     //TODO: zmieniaj currPlayer w zaleznosci od tego kto wykonal ruch (thread-safe) <-czy to musi byc thread-safe jezeli tylko jeden gracz naraz moze postawic kamien
     private final int size;
     private boolean previouslySkipped=false; // eeee
+    private int turn=1;
 
     public Board(int size) {
         this.size = size;
@@ -22,14 +23,120 @@ public class Board implements Rules {
     }
 
     @Override
-    public void placeStone(int[] coords, StoneColor stoneColor){
+    public void placeStone(int[] coords, StoneColor stoneColor, StoneColor enemy){
         int x = coords[0];
         int y = coords[1];
+        System.out.println("Turn"+this.turn);
         if (isLegal(x, y)) {
             this.stones[x][y] = new Stone(stoneColor);
+            //Nie jestem pewien tego miejsca wywolywania ale inaczej trzeba by gdzies w state zapisac board
+            if (x!=0){
+                if (this.isDead(x-1,y,enemy)==true){
+                    this.kill(x-1,y,enemy);
+                }
+            }
+            if (x!=this.size-1){
+                if (this.isDead(x+1,y,enemy)==true){
+                    this.kill(x+1,y,enemy);
+                }
+            }
+            if (y!=this.size-1){
+                if (this.isDead(x,y+1,enemy)==true){
+                    this.kill(x,y+1,enemy);
+                }
+            }
+            if (y!=0){
+                if (this.isDead(x,y-1,enemy)==true){
+                    this.kill(x,y-1,enemy);
+                }
+            }
+
             this.previouslySkipped = false;
+            turn++;
         } else {
             //TODO: zwroc komunikat o nieprawidlowym ruchu
+        }
+    }
+
+    @Override
+    public boolean isDead(int x,int y,StoneColor ally){
+        Stone top,right,bottom,left;
+        //Bardzo mi sie nie podoba jak tu sprawdzam granice
+        if(this.stones[x][y]==null || this.stones[x][y].getStoneColor()!=ally){
+            return false;
+        }
+        this.stones[x][y].lastChecked=this.turn;
+        if(x!=0){top=this.stones[x-1][y];}
+        else{
+            top=new Stone(ally);
+            top.lastChecked=this.turn;
+        }
+        if(x!=this.size-1){bottom=this.stones[x+1][y];}
+        else{
+            bottom=new Stone(ally);
+            bottom.lastChecked=this.turn;
+        }
+        if(y!=this.size-1){right=this.stones[x][y+1];}
+        else{
+            right=new Stone(ally);
+            right.lastChecked=this.turn;
+        }
+        if(y!=0){left=this.stones[x][y-1];}
+        else{
+            left=new Stone(ally);
+            left.lastChecked=this.turn;
+        }
+        if(top==null || bottom==null || left==null || right==null){
+            return false;
+        }
+        if(top.getStoneColor()==ally && top.lastChecked!=this.turn){
+            if(this.isDead(x-1,y,ally)==false){
+                return false;
+            }
+        }
+        if(bottom.getStoneColor()==ally && bottom.lastChecked!=this.turn){
+            if(this.isDead(x+1,y,ally)==false){
+                return false;
+            }
+            }
+        if(right.getStoneColor()==ally && right.lastChecked!=this.turn){
+            if(this.isDead(x,y+1,ally)==false){
+                return false;
+            }
+        }
+        if(left.getStoneColor()==ally && left.lastChecked!=this.turn){
+            if(this.isDead(x,y-1,ally)==false){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void kill(int x,int y, StoneColor ally){
+        Stone top,right,bottom,left;
+        this.stones[x][y]=null;
+
+        if(x!=0){top=this.stones[x-1][y];}
+        else{top=null;}
+        if(x!=this.size-1){bottom=this.stones[x+1][y];}
+        else{bottom=null;}
+        if(y!=this.size-1){right=this.stones[x][y+1];}
+        else{right=null;}
+        if(y!=0){left=this.stones[x][y-1];}
+        else{left=null;}
+        
+        if(top!=null && top.getStoneColor()==ally){
+            kill(x-1,y,ally);
+        }
+        if(bottom!=null && bottom.getStoneColor()==ally){
+            kill(x+1,y,ally);
+        }
+        if(right!=null && right.getStoneColor()==ally){
+            kill(x,y+1,ally);
+        }
+        if(left!=null && left.getStoneColor()==ally){
+            kill(x,y-1,ally);
         }
     }
 
@@ -42,6 +149,13 @@ public class Board implements Rules {
             this.previouslySkipped=true;
             return "SKIP_RESPONSE$0";
         }
+    }
+
+    public boolean isInBounds(int x,int y){
+        if(x>=0 && x<=this.size && y>=0 && y<=this.size){
+            return true;
+        }
+        return false;
     }
 
     public String printBoard() {
@@ -59,12 +173,15 @@ public class Board implements Rules {
             for (int y = 0; y < this.size; y++) {
                 if (stones[x][y] != null) {
                     if (stones[x][y].getStoneColor() == StoneColor.WHITE) {
-                        stringBuilder.append(" ⬤ ");
+                        //stringBuilder.append(" ⬤ "); Nie obsluguje mi terminal tych znakow
+                        stringBuilder.append(" W ");
                     } else {
-                        stringBuilder.append(" ◯ ");
+                        //stringBuilder.append(" ◯ ");
+                        stringBuilder.append(" B ");
                     }
                 }else{
-                    stringBuilder.append(" ┼ ");
+                    //stringBuilder.append(" ┼ ");
+                    stringBuilder.append(" + ");
                 }
             }
             stringBuilder.append(" ").append(x + 1);
@@ -74,6 +191,5 @@ public class Board implements Rules {
         }
         return stringBuilder.toString();
     }
-
 
 }

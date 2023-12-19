@@ -30,7 +30,7 @@ public class BlackTurnState extends ThreadState {
             // kod ktory jest w goThread (mniejwiecej)
             coords = serverParser.parseCoords(command);
             // to jest bardzo brzydkie
-            GoServer.getBoard().placeStone(coords, StoneColor.BLACK);
+            GoServer.getBoard().placeStone(coords, StoneColor.BLACK, StoneColor.WHITE);
 
             response = serverParser.parseBoard("PLACE_RESPONSE$");
             myPlayer.out.println(response);
