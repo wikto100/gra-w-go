@@ -6,10 +6,10 @@ package org.grawgo.core;
 public class Board implements Rules {
     private final Stone[][] stones;
     private final int size;
-    private boolean previouslySkipped=false; // eeee
-    private int turn=1;
-    private int whitePoints=0;
-    private int blackPoints=0;
+    private boolean previouslySkipped = false; // eeee
+    private int turn = 1;
+    private int whitePoints = 0;
+    private int blackPoints = 0;
 
     public Board(int size) {
         this.size = size;
@@ -19,49 +19,44 @@ public class Board implements Rules {
     @Override
     public boolean isLegal(int x, int y, StoneColor color) {
         //TODO: ko (punkt 5 zasad)
-        if(isInBounds(x,y)==false){
+        if (!isInBounds(x, y)) {
             return false;
-        }
-        else if(this.stones[x][y]!=null){
-            return false;
-        }
-        return true;
+        } else return this.stones[x][y] == null;
     }
 
     @Override
-    public void placeStone(int[] coords, StoneColor color, StoneColor enemy){
+    public void placeStone(int[] coords, StoneColor color, StoneColor enemy) {
         int x = coords[0];
         int y = coords[1];
-        System.out.println("Turn "+this.turn);
+        System.out.println("Turn " + this.turn);
         if (isLegal(x, y, color)) {
             this.stones[x][y] = new Stone(color);
             //Nie jestem pewien tego miejsca wywolywania ale inaczej trzeba by gdzies w state zapisac board
-            if (x!=0){
-                if (this.isDead(x-1,y,enemy)==true){
-                    this.kill(x-1,y,enemy);
+            if (x != 0) {
+                if (this.isDead(x - 1, y, enemy)) {
+                    this.kill(x - 1, y, enemy);
                 }
             }
-            if (x!=this.size-1){
-                if (this.isDead(x+1,y,enemy)==true){
-                    this.kill(x+1,y,enemy);
+            if (x != this.size - 1) {
+                if (this.isDead(x + 1, y, enemy)) {
+                    this.kill(x + 1, y, enemy);
                 }
             }
-            if (y!=this.size-1){
-                if (this.isDead(x,y+1,enemy)==true){
-                    this.kill(x,y+1,enemy);
+            if (y != this.size - 1) {
+                if (this.isDead(x, y + 1, enemy)) {
+                    this.kill(x, y + 1, enemy);
                 }
             }
-            if (y!=0){
-                if (this.isDead(x,y-1,enemy)==true){
-                    this.kill(x,y-1,enemy);
+            if (y != 0) {
+                if (this.isDead(x, y - 1, enemy)) {
+                    this.kill(x, y - 1, enemy);
                 }
             }
-            if (this.isDead(x,y,color)==true){
-                this.stones[x][y]=null;
+            if (this.isDead(x, y, color)) {
+                this.stones[x][y] = null;
                 System.out.println("illegal move");
                 //TODO: zwroc komunikat o nieprawidlowym ruchu
-            }
-            else{
+            } else {
                 this.previouslySkipped = false;
                 this.turn++;
                 System.out.println("move accepted");
@@ -73,123 +68,136 @@ public class Board implements Rules {
     }
 
     @Override
-    public boolean isDead(int x,int y,StoneColor ally){
-        Stone top,right,bottom,left;
+    public boolean isDead(int x, int y, StoneColor ally) {
+        Stone top, right, bottom, left;
         //Bardzo mi sie nie podoba jak tu sprawdzam granice
-        if(this.stones[x][y]==null || this.stones[x][y].getStoneColor()!=ally){
+        if (this.stones[x][y] == null || this.stones[x][y].getStoneColor() != ally) {
             return false;
         }
-        this.stones[x][y].lastChecked=this.turn;
-        if(x!=0){top=this.stones[x-1][y];}
-        else{
-            top=new Stone(ally);
-            top.lastChecked=this.turn;
+        this.stones[x][y].lastChecked = this.turn;
+        if (x != 0) {
+            top = this.stones[x - 1][y];
+        } else {
+            top = new Stone(ally);
+            top.lastChecked = this.turn;
         }
-        if(x!=this.size-1){bottom=this.stones[x+1][y];}
-        else{
-            bottom=new Stone(ally);
-            bottom.lastChecked=this.turn;
+        if (x != this.size - 1) {
+            bottom = this.stones[x + 1][y];
+        } else {
+            bottom = new Stone(ally);
+            bottom.lastChecked = this.turn;
         }
-        if(y!=this.size-1){right=this.stones[x][y+1];}
-        else{
-            right=new Stone(ally);
-            right.lastChecked=this.turn;
+        if (y != this.size - 1) {
+            right = this.stones[x][y + 1];
+        } else {
+            right = new Stone(ally);
+            right.lastChecked = this.turn;
         }
-        if(y!=0){left=this.stones[x][y-1];}
-        else{
-            left=new Stone(ally);
-            left.lastChecked=this.turn;
+        if (y != 0) {
+            left = this.stones[x][y - 1];
+        } else {
+            left = new Stone(ally);
+            left.lastChecked = this.turn;
         }
-        if(top==null || bottom==null || left==null || right==null){
+        if (top == null || bottom == null || left == null || right == null) {
             return false;
         }
-        if(top.getStoneColor()==ally && top.lastChecked!=this.turn){
-            if(this.isDead(x-1,y,ally)==false){
+        if (top.getStoneColor() == ally && top.lastChecked != this.turn) {
+            if (!this.isDead(x - 1, y, ally)) {
                 return false;
             }
         }
-        if(bottom.getStoneColor()==ally && bottom.lastChecked!=this.turn){
-            if(this.isDead(x+1,y,ally)==false){
-                return false;
-            }
-            }
-        if(right.getStoneColor()==ally && right.lastChecked!=this.turn){
-            if(this.isDead(x,y+1,ally)==false){
+        if (bottom.getStoneColor() == ally && bottom.lastChecked != this.turn) {
+            if (!this.isDead(x + 1, y, ally)) {
                 return false;
             }
         }
-        if(left.getStoneColor()==ally && left.lastChecked!=this.turn){
-            if(this.isDead(x,y-1,ally)==false){
+        if (right.getStoneColor() == ally && right.lastChecked != this.turn) {
+            if (!this.isDead(x, y + 1, ally)) {
                 return false;
             }
+        }
+        if (left.getStoneColor() == ally && left.lastChecked != this.turn) {
+            return this.isDead(x, y - 1, ally);
         }
         return true;
     }
 
     @Override
-    public void kill(int x,int y, StoneColor ally){
-        Stone top,right,bottom,left;
-        this.stones[x][y]=null;
+    public void kill(int x, int y, StoneColor ally) {
+        Stone top, right, bottom, left;
+        this.stones[x][y] = null;
 
-        if(ally==StoneColor.BLACK){this.whitePoints++;}
-        else{this.blackPoints++;}
+        if (ally == StoneColor.BLACK) {
+            this.whitePoints++;
+        } else {
+            this.blackPoints++;
+        }
 
-        if(x!=0){top=this.stones[x-1][y];}
-        else{top=null;}
-        if(x!=this.size-1){bottom=this.stones[x+1][y];}
-        else{bottom=null;}
-        if(y!=this.size-1){right=this.stones[x][y+1];}
-        else{right=null;}
-        if(y!=0){left=this.stones[x][y-1];}
-        else{left=null;}
-        
-        if(top!=null && top.getStoneColor()==ally){
-            kill(x-1,y,ally);
+        if (x != 0) {
+            top = this.stones[x - 1][y];
+        } else {
+            top = null;
         }
-        if(bottom!=null && bottom.getStoneColor()==ally){
-            kill(x+1,y,ally);
+        if (x != this.size - 1) {
+            bottom = this.stones[x + 1][y];
+        } else {
+            bottom = null;
         }
-        if(right!=null && right.getStoneColor()==ally){
-            kill(x,y+1,ally);
+        if (y != this.size - 1) {
+            right = this.stones[x][y + 1];
+        } else {
+            right = null;
         }
-        if(left!=null && left.getStoneColor()==ally){
-            kill(x,y-1,ally);
+        if (y != 0) {
+            left = this.stones[x][y - 1];
+        } else {
+            left = null;
+        }
+
+        if (top != null && top.getStoneColor() == ally) {
+            kill(x - 1, y, ally);
+        }
+        if (bottom != null && bottom.getStoneColor() == ally) {
+            kill(x + 1, y, ally);
+        }
+        if (right != null && right.getStoneColor() == ally) {
+            kill(x, y + 1, ally);
+        }
+        if (left != null && left.getStoneColor() == ally) {
+            kill(x, y - 1, ally);
         }
     }
 
     @Override
-    public String skip(){
+    public String skip() {
         this.turn++;
-        if (previouslySkipped){
+        if (previouslySkipped) {
             return "END_GAME_RESPONSE$";
-        }
-        else{
-            this.previouslySkipped=true;
-            return "SKIP_RESPONSE$0";
+        } else {
+            this.previouslySkipped = true;
+            return "SKIP_RESPONSE$";
         }
     }
 
-    public boolean isInBounds(int x,int y){
-        if(x>=0 && x<=this.size-1 && y>=0 && y<=this.size-1){
-            return true;
-        }
-        return false;
+    public boolean isInBounds(int x, int y) {
+        return x >= 0 && x <= this.size - 1 && y >= 0 && y <= this.size - 1;
     }
 
-    public String getScores(){
-        String res=String.valueOf(this.whitePoints);
-        res+="|";
-        res+=String.valueOf(this.blackPoints);
+    public String getScores() {
+        String res = String.valueOf(this.whitePoints);
+        res += "|";
+        res += String.valueOf(this.blackPoints);
         return res;
     }
 
     public String printBoard() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        for(int lbl = 1; lbl <= this.size; lbl++ ){
-            if(lbl < 10){
+        for (int lbl = 1; lbl <= this.size; lbl++) {
+            if (lbl < 10) {
                 stringBuilder.append(' ').append(lbl).append(' ');
-            } else{
+            } else {
                 stringBuilder.append(lbl).append(' ');
             }
         }
@@ -204,7 +212,7 @@ public class Board implements Rules {
                         //stringBuilder.append(" ◯ ");
                         stringBuilder.append(" B ");
                     }
-                }else{
+                } else {
                     //stringBuilder.append(" ┼ ");
                     stringBuilder.append(" + ");
                 }

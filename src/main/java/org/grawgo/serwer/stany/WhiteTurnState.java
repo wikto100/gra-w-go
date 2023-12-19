@@ -45,7 +45,8 @@ public class WhiteTurnState extends ThreadState {
         String response;
         if (myPlayer.getPlayerString().equals("white")) {
             response = GoServer.getBoard().skip();
-            if (response.equals("SKIP_RESPONSE$0")) {
+            if (response.equals("SKIP_RESPONSE$")) {
+                response = serverParser.parseBoard(response);
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
                 System.out.println("skipped turn");
