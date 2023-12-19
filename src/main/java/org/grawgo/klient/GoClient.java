@@ -43,10 +43,10 @@ public class GoClient {
                 joinedFlag = true;
                 return true;
             case "JOIN_FAILED_RESPONSE":
-                System.out.println("Select the other color: ");
+                System.out.println("Select the other color!!");
                 return true;
             case "COLOR_PICK_RESPONSE":
-                System.out.println("Pick black/white: ");
+                System.out.println("Pick black/white!!");
                 return true;
             case "DISCONNECT_RESPONSE":
                 System.out.println("disconnecting...");

@@ -1,6 +1,5 @@
 package org.grawgo.serwer;
 
-import org.grawgo.core.Board;
 
 //TODO wylapywanie nieprawidlowych danych po place
 //Double locked singleton

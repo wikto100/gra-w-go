@@ -95,6 +95,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
         }
     }
     public String getPlayerString() {
+        if(this.player == null) return null;
         return this.player.name().toLowerCase();
     }
     public void changeState(ThreadState threadState) {
