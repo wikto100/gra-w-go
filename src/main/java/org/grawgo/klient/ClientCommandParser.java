@@ -7,13 +7,10 @@ public class ClientCommandParser {
         StringBuilder dataBuilder = new StringBuilder();
         String command = splitInput[0];
         int ARGNO;
-        switch (command){
-            case "place":
-                ARGNO = 3; // place x1 y1
-                break;
-            default:
-                ARGNO = 1; // komendy jak exit, disconnect, black, white etc
-                break;
+        if (command.equals("place")) {
+            ARGNO = 3; // place x1 y1
+        } else {
+            ARGNO = 1; // komendy jak exit, disconnect, black, white etc
         }
         command += "$";
         for (int i = 1; i < ARGNO; i++) {

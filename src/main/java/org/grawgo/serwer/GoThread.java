@@ -56,20 +56,6 @@ public class GoThread extends Thread implements ServerCommandInterface {
                             handlePlace(command);
                             break;
                         case "skip":
-                            // nie ruszam ci tego, przenieś do odp metod
-                            //TODO sprawdz czy poprzedni ruch to skip
-                            /**response = GoServer.getBoard().skip();
-                             if (response.equals("SKIP_RESPONSE$0")) {
-                             out.println(response);
-                             System.out.println("skipped turn");
-                             } else if (response.equals("END_GAME_RESPONSE$")) {
-                             //TODO: policz wynik
-                             //TODO: wyswietl wynik i zakoncz gre u obu graczy
-                             response += "0|0";
-                             out.println(response);
-                             System.out.println("Ending game");
-                             //TODO: lepszy exit
-                             break game;**/
                             handleSkip();
                             break game;
                         case "exit":
@@ -129,7 +115,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
     }
 
     @Override
-    public void handleSkip() {
+    public void handleSkip() throws InterruptedException {
         currState.handleSkip();
     }
 

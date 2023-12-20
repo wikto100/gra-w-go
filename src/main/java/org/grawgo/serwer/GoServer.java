@@ -49,13 +49,6 @@ public class GoServer {
         }
     }
 
-    public static void reset() {
-        threads.clear();
-        whiteConnected = false;
-        blackConnected = false;
-        board = new Board(19);
-    }
-
     public static void reset(GoThread player) {
         if (player.getPlayerString().equals("white")) {
             whiteConnected = false;
