@@ -73,6 +73,7 @@ public class GoClient {
                     System.out.println("OPPONENT DISCONNECTED");
                     return false;
                 }
+
                 System.out.println(clientParser.parseBoardFromServer(response));
                 System.out.println(" __________________________ ** ___________________________");
                 return true;

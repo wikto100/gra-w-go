@@ -20,7 +20,7 @@ public class WhiteTurnState extends ThreadState {
     }
 
     @Override
-    public void handlePlace(String command) {
+    synchronized public void handlePlace(String command) {
         int[] coords;
         String response;
         if (myPlayer.getPlayerString().equals("white")) {
@@ -41,7 +41,7 @@ public class WhiteTurnState extends ThreadState {
     }
 
     @Override
-    public void handleSkip() {
+    synchronized public void handleSkip() {
         String response;
         if (myPlayer.getPlayerString().equals("white")) {
             response = GoServer.getBoard().skip();

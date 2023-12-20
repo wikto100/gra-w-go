@@ -57,7 +57,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
                             break;
                         case "skip":
                             handleSkip();
-                            break game;
+                            break;
                         case "exit":
                             handleExit();
                             break game; // <- czy to na pewno jest bezpieczne?
@@ -115,7 +115,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
     }
 
     @Override
-    public void handleSkip() throws InterruptedException {
+    public void handleSkip(){
         currState.handleSkip();
     }
 

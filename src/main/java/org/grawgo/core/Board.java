@@ -10,7 +10,7 @@ import java.util.Stack;
 public class Board implements Rules {
     private final Stone[][] stones;
     private final int size;
-    private boolean previouslySkipped = false;
+    private volatile boolean previouslySkipped = false;
     private int turn = 1;
     private int whitePoints = 0;
     private int blackPoints = 0;
@@ -191,7 +191,7 @@ public class Board implements Rules {
         }
 
         private String StringifyCoords() {
-            return String.valueOf(this.x) + ',' + String.valueOf(y);
+            return String.valueOf(this.x) + ',' + y;
         }
 
         final int x;
@@ -265,8 +265,10 @@ public class Board implements Rules {
     }
 
     public String getScores() {
+        countScore(StoneColor.WHITE);
         String res = String.valueOf(this.whitePoints);
         res += "|";
+        countScore(StoneColor.BLACK);
         res += String.valueOf(this.blackPoints);
         return res;
     }

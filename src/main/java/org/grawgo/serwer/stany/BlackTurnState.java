@@ -22,7 +22,7 @@ public class BlackTurnState extends ThreadState {
     }
 
     @Override
-    public void handlePlace(String command) {
+    synchronized public void handlePlace(String command) {
         int[] coords;
         String response;
         // tylko jesli czarny
@@ -45,7 +45,7 @@ public class BlackTurnState extends ThreadState {
     }
 
     @Override
-    public void handleSkip() {
+    synchronized public void handleSkip() {
         // tylko jesli czarny
         String response;
         if (myPlayer.getPlayerString().equals("black")) {
