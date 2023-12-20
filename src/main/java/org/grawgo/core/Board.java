@@ -190,12 +190,13 @@ public class Board implements Rules {
             this.y = y;
         }
 
-        private String StringifyCoords() {
-            return String.valueOf(this.x) + ',' + y;
-        }
 
         final int x;
         final int y;
+
+        private String StringifyCoords() {
+            return String.valueOf(this.x) + ',' + y;
+        }
 
         private boolean isInside(StoneColor color) {
             // BSO dla białych pionów
@@ -213,20 +214,34 @@ public class Board implements Rules {
 
     @Override
     public int countScore(StoneColor color) {
-        // tworzę symulacje planszy
         int stoneCount = 0;
+        boolean southWall = false;
+        boolean northWall = false;
+        boolean eastWall = false;
+        boolean westWall = false;
+
         Stack<Point> nodes = new Stack<>();
         Set<String> uniqueIndex = new HashSet<>();
         // foundPotRegionX,foundPotRegionY
         Point start = new Point(0, 0);
-        Point west,east,north,south;
+        Point west, east, north, south;
         nodes.add(start);
 
         while (!nodes.empty()) {
             Point p = nodes.pop();
             if (p.isInside(color)) {
                 if (!uniqueIndex.contains(p.StringifyCoords())) {
-                    if( stones[p.x][p.y] != null) return 0;
+                    // czarny pionek znaleziony
+                    if (stones[p.x][p.y] != null) return 0;
+
+                    if (p.x == 0) westWall = true;
+                    if (p.y == 0) northWall = true;
+                    if (p.x == size - 1) eastWall = true;
+                    if (p.y == size - 1) southWall = true;
+
+                    // uderzone wszzystkie ściany
+                    if(westWall && northWall && eastWall && southWall) return 0;
+
                     uniqueIndex.add(p.StringifyCoords());
                     stoneCount++;
                     west = new Point(p.x - 1, p.y);
@@ -248,10 +263,9 @@ public class Board implements Rules {
 
                 }
 
-
-            } else if (isInBounds(p.x,p.y) && stones[p.x][p.y].getStoneColor() != color) return 0;
+            }
         }
-        if(color.equals(StoneColor.BLACK)){
+        if (color.equals(StoneColor.BLACK)) {
             blackPoints = stoneCount;
         } else if (color.equals(StoneColor.WHITE)) {
             whitePoints = stoneCount;
@@ -265,6 +279,17 @@ public class Board implements Rules {
     }
 
     public String getScores() {
+        Set<String> uniqueIndex = new HashSet<>();
+
+        for(int i = 0; i< this.size;i++){
+            for(int j = 0; j < this.size; j++){
+                // na pierwszym nullu który nie był pokolorowany
+                if(stones[i][j] == null && !uniqueIndex.contains(i+","+j)){
+                    // licz to terytorium
+
+                }
+            }
+        }
         countScore(StoneColor.WHITE);
         String res = String.valueOf(this.whitePoints);
         res += "|";
