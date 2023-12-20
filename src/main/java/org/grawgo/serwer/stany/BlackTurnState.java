@@ -56,9 +56,6 @@ public class BlackTurnState extends ThreadState {
                 otherPlayer.out.println(response);
                 System.out.println("skipped turn");
             } else if (response.equals("END_GAME_RESPONSE$")) {
-                //TODO: policz wynik
-                //TODO: szansa odrzucenia konca gry
-                //TODO: zakoncz gre u obu graczy
                 response += GoServer.getBoard().getScores();
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);

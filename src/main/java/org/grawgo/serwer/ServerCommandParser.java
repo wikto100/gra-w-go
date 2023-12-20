@@ -31,8 +31,8 @@ public class ServerCommandParser {
     public int[] parseCoords(String input) {
         String data = input.split("\\$")[1];
         int[] coords = new int[2];
-        coords[0] = Integer.parseInt(data.split("\\|")[0]) - 1;
-        coords[1] = Integer.parseInt(data.split("\\|")[1]) - 1;
+        coords[0] = Integer.parseInt(data.split("\\|")[0]);
+        coords[1] = Integer.parseInt(data.split("\\|")[1]);
         return coords;
     }
 

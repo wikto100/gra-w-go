@@ -17,7 +17,17 @@ public class Board implements Rules {
 
     public Board(int size) {
         this.size = size;
-        stones = new Stone[size][size];
+        stones = new Stone[size+2][size+2];
+        for(int i=0; i<=size+1; i++){
+            for(int j=0; j<=size+1; j++){
+                if(j==0 || j==size+1 || i==0 || i==size+1){
+                    this.stones[i][j] = new Stone(StoneColor.BORDER);
+                }
+                else{
+                    //System.out.print(i+" "+j+" E ");
+                }
+            }
+        }
     }
 
     @Override
@@ -36,25 +46,17 @@ public class Board implements Rules {
         if (isLegal(x, y, color)) {
             this.stones[x][y] = new Stone(color);
             //Nie jestem pewien tego miejsca wywolywania ale inaczej trzeba by gdzies w state zapisac board
-            if (x != 0) {
-                if (this.isDead(x - 1, y, enemy)) {
-                    this.kill(x - 1, y, enemy);
-                }
+            if (this.isDead(x - 1, y, enemy)) {
+                this.kill(x - 1, y, enemy);
             }
-            if (x != this.size - 1) {
-                if (this.isDead(x + 1, y, enemy)) {
-                    this.kill(x + 1, y, enemy);
-                }
+            if (this.isDead(x + 1, y, enemy)) {
+                this.kill(x + 1, y, enemy);
             }
-            if (y != this.size - 1) {
-                if (this.isDead(x, y + 1, enemy)) {
-                    this.kill(x, y + 1, enemy);
-                }
+            if (this.isDead(x, y + 1, enemy)) {
+                this.kill(x, y + 1, enemy);
             }
-            if (y != 0) {
-                if (this.isDead(x, y - 1, enemy)) {
-                    this.kill(x, y - 1, enemy);
-                }
+            if (this.isDead(x, y - 1, enemy)) {
+                this.kill(x, y - 1, enemy);
             }
             if (this.isDead(x, y, color)) {
                 this.stones[x][y] = null;
@@ -74,35 +76,14 @@ public class Board implements Rules {
     @Override
     public boolean isDead(int x, int y, StoneColor ally) {
         Stone top, right, bottom, left;
-        //Bardzo mi sie nie podoba jak tu sprawdzam granice
         if (this.stones[x][y] == null || this.stones[x][y].getStoneColor() != ally) {
             return false;
         }
         this.stones[x][y].lastChecked = this.turn;
-        if (x != 0) {
-            top = this.stones[x - 1][y];
-        } else {
-            top = new Stone(ally);
-            top.lastChecked = this.turn;
-        }
-        if (x != this.size - 1) {
-            bottom = this.stones[x + 1][y];
-        } else {
-            bottom = new Stone(ally);
-            bottom.lastChecked = this.turn;
-        }
-        if (y != this.size - 1) {
-            right = this.stones[x][y + 1];
-        } else {
-            right = new Stone(ally);
-            right.lastChecked = this.turn;
-        }
-        if (y != 0) {
-            left = this.stones[x][y - 1];
-        } else {
-            left = new Stone(ally);
-            left.lastChecked = this.turn;
-        }
+        top = this.stones[x - 1][y];
+        bottom = this.stones[x + 1][y];
+        right = this.stones[x][y + 1];
+        left = this.stones[x][y - 1];
         if (top == null || bottom == null || left == null || right == null) {
             return false;
         }
@@ -138,26 +119,10 @@ public class Board implements Rules {
             this.blackPoints++;
         }
 
-        if (x != 0) {
-            top = this.stones[x - 1][y];
-        } else {
-            top = null;
-        }
-        if (x != this.size - 1) {
-            bottom = this.stones[x + 1][y];
-        } else {
-            bottom = null;
-        }
-        if (y != this.size - 1) {
-            right = this.stones[x][y + 1];
-        } else {
-            right = null;
-        }
-        if (y != 0) {
-            left = this.stones[x][y - 1];
-        } else {
-            left = null;
-        }
+        top = this.stones[x - 1][y];
+        bottom = this.stones[x + 1][y];
+        right = this.stones[x][y + 1];
+        left = this.stones[x][y - 1];
 
         if (top != null && top.getStoneColor() == ally) {
             kill(x - 1, y, ally);
@@ -218,7 +183,7 @@ public class Board implements Rules {
         Stack<Point> nodes = new Stack<>();
         Set<String> uniqueIndex = new HashSet<>();
         // foundPotRegionX,foundPotRegionY
-        Point start = new Point(0, 0);
+        Point start = new Point(1, 1);
         Point west,east,north,south;
         nodes.add(start);
 
@@ -252,16 +217,16 @@ public class Board implements Rules {
             } else if (isInBounds(p.x,p.y) && stones[p.x][p.y].getStoneColor() != color) return 0;
         }
         if(color.equals(StoneColor.BLACK)){
-            blackPoints = stoneCount;
+            blackPoints += stoneCount;
         } else if (color.equals(StoneColor.WHITE)) {
-            whitePoints = stoneCount;
+            whitePoints += stoneCount;
         }
         return stoneCount;
     }
 
 
     public boolean isInBounds(int x, int y) {
-        return x >= 0 && x <= this.size - 1 && y >= 0 && y <= this.size - 1;
+        return x >= 1 && x <= this.size && y >= 1 && y <= this.size;
     }
 
     public String getScores() {
@@ -284,8 +249,8 @@ public class Board implements Rules {
             }
         }
         stringBuilder.append('|');
-        for (int x = 0; x < this.size; x++) {
-            for (int y = 0; y < this.size; y++) {
+        for (int x = 1; x < this.size+1; x++) {
+            for (int y = 1; y < this.size+1; y++) {
                 if (stones[x][y] != null) {
                     if (stones[x][y].getStoneColor() == StoneColor.WHITE) {
                         //stringBuilder.append(" ⬤ "); Nie obsluguje mi terminal tych znakow
@@ -299,11 +264,15 @@ public class Board implements Rules {
                     stringBuilder.append(" + ");
                 }
             }
-            stringBuilder.append(" ").append(x + 1);
+            stringBuilder.append(" ").append(x);
             stringBuilder.append('|');
 
 
         }
         return stringBuilder.toString();
+    }
+    //Do testow
+    public Stone getStone(int x, int y){
+        return this.stones[x][y];
     }
 }

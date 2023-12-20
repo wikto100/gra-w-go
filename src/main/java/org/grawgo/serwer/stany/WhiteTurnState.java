@@ -51,7 +51,6 @@ public class WhiteTurnState extends ThreadState {
                 otherPlayer.out.println(response);
                 System.out.println("skipped turn");
             } else if (response.equals("END_GAME_RESPONSE$")) {
-                //TODO: skip dziala koniec gry jest do zrobienia
                 response += GoServer.getBoard().getScores();
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
