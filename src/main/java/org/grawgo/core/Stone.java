@@ -1,7 +1,7 @@
 package org.grawgo.core;
 
 public class Stone {
-    private final StoneColor stoneColor;
+    private StoneColor stoneColor;
     public int lastChecked=0;
 
     public Stone(StoneColor stoneColor) {
@@ -10,5 +10,9 @@ public class Stone {
 
     public StoneColor getStoneColor() {
         return stoneColor;
+    }
+
+    public void setStoneColor(StoneColor color){
+        this.stoneColor=color;
     }
 }

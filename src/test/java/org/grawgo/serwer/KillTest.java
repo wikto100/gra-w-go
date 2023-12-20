@@ -20,8 +20,8 @@ public class KillTest {
         coords[0] = 1;
         coords[1] = 2;
         testBoard.placeStone(coords, StoneColor.BLACK,StoneColor.WHITE);
-        Stone result = testBoard.getStone(1,1);
-        assertEquals(null,result);
+        StoneColor result = testBoard.getStone(1,1).getStoneColor();
+        assertEquals(result,StoneColor.EMPTY);
     }
 
     @Test
@@ -42,8 +42,8 @@ public class KillTest {
         coords[0] = 8;
         coords[1] = 9;
         testBoard.placeStone(coords, StoneColor.BLACK,StoneColor.WHITE);
-        Stone result = testBoard.getStone(8,8);
-        assertEquals(null,result);
+        StoneColor result = testBoard.getStone(8,8).getStoneColor();
+        assertEquals(result,StoneColor.EMPTY);
     }
 
     @Test
@@ -59,8 +59,8 @@ public class KillTest {
             testBoard.placeStone(coords2, StoneColor.BLACK,StoneColor.WHITE);
         }
         for (int i=1; i<20; i++){
-            Stone result = testBoard.getStone(i,1);
-            assertEquals(null,result);
+            StoneColor result = testBoard.getStone(i,1).getStoneColor();
+            assertEquals(result,StoneColor.EMPTY);
         }
     }
     //TODO: wiekszy ksztalt

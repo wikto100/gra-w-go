@@ -24,7 +24,7 @@ public class Board implements Rules {
                     this.stones[i][j] = new Stone(StoneColor.BORDER);
                 }
                 else{
-                    //System.out.print(i+" "+j+" E ");
+                    this.stones[i][j] = new Stone(StoneColor.EMPTY);
                 }
             }
         }
@@ -35,7 +35,7 @@ public class Board implements Rules {
         //TODO: ko (punkt 5 zasad)
         if (!isInBounds(x, y)) {
             return false;
-        } else return this.stones[x][y] == null;
+        } else return this.stones[x][y].getStoneColor() == StoneColor.EMPTY;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class Board implements Rules {
         int y = coords[1];
         System.out.println("Turn " + this.turn);
         if (isLegal(x, y, color)) {
-            this.stones[x][y] = new Stone(color);
+            this.stones[x][y].setStoneColor(color);
             //Nie jestem pewien tego miejsca wywolywania ale inaczej trzeba by gdzies w state zapisac board
             if (this.isDead(x - 1, y, enemy)) {
                 this.kill(x - 1, y, enemy);
@@ -59,7 +59,7 @@ public class Board implements Rules {
                 this.kill(x, y - 1, enemy);
             }
             if (this.isDead(x, y, color)) {
-                this.stones[x][y] = null;
+                this.stones[x][y].setStoneColor(StoneColor.EMPTY);
                 System.out.println("illegal move");
                 //TODO: zwroc komunikat o nieprawidlowym ruchu
             } else {
@@ -76,7 +76,7 @@ public class Board implements Rules {
     @Override
     public boolean isDead(int x, int y, StoneColor ally) {
         Stone top, right, bottom, left;
-        if (this.stones[x][y] == null || this.stones[x][y].getStoneColor() != ally) {
+        if (this.stones[x][y].getStoneColor() != ally) {
             return false;
         }
         this.stones[x][y].lastChecked = this.turn;
@@ -84,7 +84,7 @@ public class Board implements Rules {
         bottom = this.stones[x + 1][y];
         right = this.stones[x][y + 1];
         left = this.stones[x][y - 1];
-        if (top == null || bottom == null || left == null || right == null) {
+        if (top.getStoneColor() == StoneColor.EMPTY || bottom.getStoneColor() == StoneColor.EMPTY || left.getStoneColor() == StoneColor.EMPTY || right.getStoneColor() == StoneColor.EMPTY) {
             return false;
         }
         if (top.getStoneColor() == ally && top.lastChecked != this.turn) {
@@ -111,7 +111,7 @@ public class Board implements Rules {
     @Override
     public void kill(int x, int y, StoneColor ally) {
         Stone top, right, bottom, left;
-        this.stones[x][y] = null;
+        this.stones[x][y].setStoneColor(StoneColor.EMPTY);
 
         if (ally == StoneColor.BLACK) {
             this.whitePoints++;
@@ -124,16 +124,16 @@ public class Board implements Rules {
         right = this.stones[x][y + 1];
         left = this.stones[x][y - 1];
 
-        if (top != null && top.getStoneColor() == ally) {
+        if (top.getStoneColor() == ally) {
             kill(x - 1, y, ally);
         }
-        if (bottom != null && bottom.getStoneColor() == ally) {
+        if (bottom.getStoneColor() == ally) {
             kill(x + 1, y, ally);
         }
-        if (right != null && right.getStoneColor() == ally) {
+        if (right.getStoneColor() == ally) {
             kill(x, y + 1, ally);
         }
-        if (left != null && left.getStoneColor() == ally) {
+        if (left.getStoneColor() == ally) {
             kill(x, y - 1, ally);
         }
     }
@@ -167,7 +167,7 @@ public class Board implements Rules {
             // jest na planszy
             if (isInBounds(this.x, this.y)) {
                 // jest pusty
-                if (stones[this.x][this.y] == null) return true;
+                if (stones[this.x][this.y].getStoneColor()==StoneColor.EMPTY) return true;
                 // jest białe pole -> false
                 return stones[this.x][this.y].getStoneColor() != color;
             }
@@ -191,7 +191,7 @@ public class Board implements Rules {
             Point p = nodes.pop();
             if (p.isInside(color)) {
                 if (!uniqueIndex.contains(p.StringifyCoords())) {
-                    if( stones[p.x][p.y] != null) return 0;
+                    if( stones[p.x][p.y].getStoneColor()!=StoneColor.EMPTY) return 0;
                     uniqueIndex.add(p.StringifyCoords());
                     stoneCount++;
                     west = new Point(p.x - 1, p.y);
@@ -251,15 +251,15 @@ public class Board implements Rules {
         stringBuilder.append('|');
         for (int x = 1; x < this.size+1; x++) {
             for (int y = 1; y < this.size+1; y++) {
-                if (stones[x][y] != null) {
-                    if (stones[x][y].getStoneColor() == StoneColor.WHITE) {
+                if (stones[x][y].getStoneColor() == StoneColor.WHITE) {
                         //stringBuilder.append(" ⬤ "); Nie obsluguje mi terminal tych znakow
-                        stringBuilder.append(" W ");
-                    } else {
+                    stringBuilder.append(" W ");
+                } 
+                else if (stones[x][y].getStoneColor() == StoneColor.BLACK) {
                         //stringBuilder.append(" ◯ ");
                         stringBuilder.append(" B ");
                     }
-                } else {
+                else {
                     //stringBuilder.append(" ┼ ");
                     stringBuilder.append(" + ");
                 }
