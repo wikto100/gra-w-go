@@ -59,6 +59,9 @@ public class GoClient {
             case "INVALID_RESPONSE":
                 System.out.println("invalid command");
                 return true;
+            case "ILLEGAL_MOVE_RESPONSE":
+                System.out.println("illegal move");
+                return true;
             case "SKIP_RESPONSE":
                 System.out.println("Skipped turn");
                 System.out.println(" ___________________________ ** ___________________________");

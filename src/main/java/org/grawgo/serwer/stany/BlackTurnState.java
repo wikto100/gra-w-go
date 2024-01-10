@@ -25,20 +25,22 @@ public class BlackTurnState extends ThreadState {
     synchronized public void handlePlace(String command) {
         int[] coords;
         String response;
+        boolean success;
         // tylko jesli czarny
         if (myPlayer.getPlayerString().equals("black")) {
-            // kod ktory jest w goThread (mniejwiecej)
             coords = serverParser.parseCoords(command);
-            // to jest bardzo brzydkie
-            GoServer.getBoard().placeStone(coords, StoneColor.BLACK, StoneColor.WHITE);
+            success=GoServer.getBoard().placeStone(coords, StoneColor.BLACK, StoneColor.WHITE);
 
-            response = serverParser.parseBoard("PLACE_RESPONSE$");
-            myPlayer.out.println(response);
-            otherPlayer.out.println(response);
-
-            otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
-            myPlayer.changeState(new WhiteTurnState(myPlayer, otherPlayer));
-
+            if(success){
+                response = serverParser.parseBoard("PLACE_RESPONSE$");
+                myPlayer.out.println(response);
+                otherPlayer.out.println(response);
+                otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
+                myPlayer.changeState(new WhiteTurnState(myPlayer, otherPlayer));
+            }
+            else{
+                myPlayer.out.println("ILLEGAL_MOVE_RESPONSE$");
+            }
         } else {
             myPlayer.out.println("INVALID_TURN_RESPONSE$");
         }

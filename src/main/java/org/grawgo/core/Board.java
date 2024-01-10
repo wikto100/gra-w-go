@@ -1,6 +1,5 @@
 package org.grawgo.core;
 
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
@@ -31,21 +30,23 @@ public class Board implements Rules {
     }
 
     @Override
-    public boolean isLegal(int x, int y, StoneColor color) {
-        //TODO: ko (punkt 5 zasad)
+    public boolean isLegal(int x, int y) {
         if (!isInBounds(x, y)) {
             return false;
-        } else return this.stones[x][y].getStoneColor() == StoneColor.EMPTY;
+        } 
+        else if (this.turn!=1 && this.stones[x][y].lastChecked==this.turn-1){ //Ruch na zbite pole jest albo nielegalny albo odbija w ko
+            return false;
+        }
+        return this.stones[x][y].getStoneColor() == StoneColor.EMPTY;
     }
 
     @Override
-    public void placeStone(int[] coords, StoneColor color, StoneColor enemy) {
+    public boolean placeStone(int[] coords, StoneColor color, StoneColor enemy) {
         int x = coords[0];
         int y = coords[1];
         System.out.println("Turn " + this.turn);
-        if (isLegal(x, y, color)) {
+        if (isLegal(x, y)) {
             this.stones[x][y].setStoneColor(color);
-            //Nie jestem pewien tego miejsca wywolywania ale inaczej trzeba by gdzies w state zapisac board
             if (this.isDead(x - 1, y, enemy)) {
                 this.kill(x - 1, y, enemy);
             }
@@ -61,15 +62,16 @@ public class Board implements Rules {
             if (this.isDead(x, y, color)) {
                 this.stones[x][y].setStoneColor(StoneColor.EMPTY);
                 System.out.println("illegal move");
-                //TODO: zwroc komunikat o nieprawidlowym ruchu
+                return false;
             } else {
                 this.previouslySkipped = false;
                 this.turn++;
                 System.out.println("move accepted");
+                return true;
             }
         } else {
             System.out.println("illegal move");
-            //TODO: zwroc komunikat o nieprawidlowym ruchu
+            return false;
         }
     }
 
