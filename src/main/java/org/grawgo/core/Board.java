@@ -35,7 +35,7 @@ public class Board implements Rules {
             return false;
         } 
         else if (this.turn!=1 && this.stones[x][y].lastChecked==this.turn-1){ //Ruch na zbite pole jest albo nielegalny albo odbija w ko
-            return false;
+            return false; //Pomylilem sie trzeba zmienic na nie mozna odbic pojedynczego kamienia
         }
         return this.stones[x][y].getStoneColor() == StoneColor.EMPTY;
     }
@@ -139,7 +139,7 @@ public class Board implements Rules {
             kill(x, y - 1, ally);
         }
     }
-
+    
     @Override
     public String skip() {
         this.turn++;
@@ -150,7 +150,7 @@ public class Board implements Rules {
             return "SKIP_RESPONSE$";
         }
     }
-
+    /*
     private class Point {
         private Point(int x, int y) {
             this.x = x;
@@ -225,12 +225,91 @@ public class Board implements Rules {
         }
         return stoneCount;
     }
+    */
+    @Override
+    public int countScore(StoneColor color){
+        for(int i=1; i<=this.size; i++){
+            for(int j=1; j<=this.size; j++){
+                if(this.stones[i][j].getStoneColor()==StoneColor.EMPTY && this.stones[i][j].lastChecked!=this.turn && this.stones[i][j].owner==StoneColor.EMPTY){
+                    if(this.isTerritory(i,j,color)){
+                        this.paint(i,j,color);
+                    }
+                    this.turn++;
+                }
+            }
+        }
+        if(color==StoneColor.WHITE){
+            return this.whitePoints;
+        }
+        else{
+            return this.blackPoints;
+        }
+    }
 
+    public boolean isTerritory(int x,int y,StoneColor color){
+        this.stones[x][y].lastChecked=this.turn;
+        if(this.stones[x][y].getStoneColor()==color || this.stones[x][y].getStoneColor()==StoneColor.BORDER){
+            return true;
+        }
+        if(this.stones[x][y].getStoneColor()!=StoneColor.EMPTY){
+            return false;
+        }
+        if(this.stones[x-1][y].lastChecked!=this.turn){
+            if (!this.isTerritory(x - 1, y, color)) {
+                return false;
+            }
+        }
+        if(this.stones[x+1][y].lastChecked!=this.turn){
+            if (!this.isTerritory(x + 1, y, color)) {
+                return false;
+            }
+        }
+        if(this.stones[x][y+1].lastChecked!=this.turn){
+            if (!this.isTerritory(x, y + 1, color)) {
+                return false;
+            }
+        }
+        if(this.stones[x][y-1].lastChecked!=this.turn){
+            if (!this.isTerritory(x, y - 1, color)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void paint(int x, int y, StoneColor color) {
+        Stone top, right, bottom, left;
+        this.stones[x][y].owner=color;
+
+        if (color == StoneColor.WHITE) {
+            this.whitePoints++;
+        } else {
+            this.blackPoints++;
+        }
+
+        top = this.stones[x - 1][y];
+        bottom = this.stones[x + 1][y];
+        right = this.stones[x][y + 1];
+        left = this.stones[x][y - 1];
+
+        if (top.getStoneColor() == StoneColor.EMPTY && top.owner == StoneColor.EMPTY) {
+            paint(x - 1, y, color);
+        }
+        if (bottom.getStoneColor() == StoneColor.EMPTY && bottom.owner == StoneColor.EMPTY) {
+            paint(x + 1, y, color);
+        }
+        if (right.getStoneColor() == StoneColor.EMPTY && right.owner == StoneColor.EMPTY) {
+            paint(x, y + 1, color);
+        }
+        if (left.getStoneColor() == StoneColor.EMPTY && left.owner == StoneColor.EMPTY) {
+            paint(x, y - 1, color);
+        }
+    }
 
     public boolean isInBounds(int x, int y) {
         return x >= 1 && x <= this.size && y >= 1 && y <= this.size;
     }
-
+    //TODO gracze ustalaja ktore grupy sa martwe
     public String getScores() {
         countScore(StoneColor.WHITE);
         String res = String.valueOf(this.whitePoints);

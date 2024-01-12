@@ -3,6 +3,7 @@ package org.grawgo.core;
 public class Stone {
     private StoneColor stoneColor;
     public int lastChecked=0;
+    public StoneColor owner=StoneColor.EMPTY;
 
     public Stone(StoneColor stoneColor) {
         this.stoneColor = stoneColor;
