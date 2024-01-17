@@ -29,7 +29,7 @@ public class ServerParserTest
     @Test
     public void placeTest()
     {
-        String command="place$8|10";
+        String command="place$7|9";
         int res1,res2;
         int ex1=7,ex2=9;
         res1=testParser.parseCoords(command)[0];

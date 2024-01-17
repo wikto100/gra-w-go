@@ -23,18 +23,21 @@ public class WhiteTurnState extends ThreadState {
     synchronized public void handlePlace(String command) {
         int[] coords;
         String response;
+        boolean success;
         if (myPlayer.getPlayerString().equals("white")) {
-            // kod ktory jest w goThread (mniejwiecej)
             coords = serverParser.parseCoords(command);
-            // to jest bardzo brzydkie
-            GoServer.getBoard().placeStone(coords, StoneColor.WHITE, StoneColor.BLACK);
-
-            response = serverParser.parseBoard("PLACE_RESPONSE$");
-            myPlayer.out.println(response);
-            otherPlayer.out.println(response);
-
-            otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
-            myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
+            success=GoServer.getBoard().placeStone(coords, StoneColor.WHITE, StoneColor.BLACK);
+            
+            if(success){
+                response = serverParser.parseBoard("PLACE_RESPONSE$");
+                myPlayer.out.println(response);
+                otherPlayer.out.println(response);
+                otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
+                myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
+            }
+            else{
+                myPlayer.out.println("ILLEGAL_MOVE_RESPONSE$");
+            }
         } else {
             myPlayer.out.println("INVALID_TURN_RESPONSE$");
         }
@@ -51,7 +54,6 @@ public class WhiteTurnState extends ThreadState {
                 otherPlayer.out.println(response);
                 System.out.println("skipped turn");
             } else if (response.equals("END_GAME_RESPONSE$")) {
-                //TODO: skip dziala koniec gry jest do zrobienia
                 response += GoServer.getBoard().getScores();
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
