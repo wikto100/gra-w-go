@@ -1,8 +1,5 @@
 package org.grawgo.core;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
 
 //TODO: to nie jest jeszcze thread-safe jako
 // klasa statyczna współdzielona przez GoThready. Zaimplementujmy jakieś locki żeby było ok
@@ -150,82 +147,6 @@ public class Board implements Rules {
             return "SKIP_RESPONSE$";
         }
     }
-    /*
-    private class Point {
-        private Point(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        private String StringifyCoords() {
-            return String.valueOf(this.x) + ',' + y;
-        }
-
-        final int x;
-        final int y;
-
-        private boolean isInside(StoneColor color) {
-            // BSO dla białych pionów
-            // jest na planszy
-            if (isInBounds(this.x, this.y)) {
-                // jest pusty
-                if (stones[this.x][this.y].getStoneColor()==StoneColor.EMPTY) return true;
-                // jest białe pole -> false
-                return stones[this.x][this.y].getStoneColor() != color;
-            }
-            // nie jest na planszy to nie jest w środku
-            return false;
-        }
-    }
-
-    @Override
-    public int countScore(StoneColor color) {
-        // tworzę symulacje planszy
-        int stoneCount = 0;
-        Stack<Point> nodes = new Stack<>();
-        Set<String> uniqueIndex = new HashSet<>();
-        // foundPotRegionX,foundPotRegionY
-        Point start = new Point(1, 1);
-        Point west,east,north,south;
-        nodes.add(start);
-
-        while (!nodes.empty()) {
-            Point p = nodes.pop();
-            if (p.isInside(color)) {
-                if (!uniqueIndex.contains(p.StringifyCoords())) {
-                    if( stones[p.x][p.y].getStoneColor()!=StoneColor.EMPTY) return 0;
-                    uniqueIndex.add(p.StringifyCoords());
-                    stoneCount++;
-                    west = new Point(p.x - 1, p.y);
-                    east = new Point(p.x + 1, p.y);
-                    south = new Point(p.x, p.y + 1);
-                    north = new Point(p.x, p.y - 1);
-                    if (!uniqueIndex.contains(west.StringifyCoords())) {
-                        nodes.add(west);
-                    }
-                    if (!uniqueIndex.contains(east.StringifyCoords())) {
-                        nodes.add(east);
-                    }
-                    if (!uniqueIndex.contains(north.StringifyCoords())) {
-                        nodes.add(north);
-                    }
-                    if (!uniqueIndex.contains(south.StringifyCoords())) {
-                        nodes.add(south);
-                    }
-
-                }
-
-
-            } else if (isInBounds(p.x,p.y) && stones[p.x][p.y].getStoneColor() != color) return 0;
-        }
-        if(color.equals(StoneColor.BLACK)){
-            blackPoints += stoneCount;
-        } else if (color.equals(StoneColor.WHITE)) {
-            whitePoints += stoneCount;
-        }
-        return stoneCount;
-    }
-    */
     @Override
     public int countScore(StoneColor color){
         for(int i=1; i<=this.size; i++){

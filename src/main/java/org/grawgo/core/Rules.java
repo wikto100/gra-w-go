@@ -1,5 +1,6 @@
 package org.grawgo.core;
 
+
 public interface Rules {
     boolean isLegal(int x, int y);
     boolean placeStone(int[] coords, StoneColor color, StoneColor enemy);
