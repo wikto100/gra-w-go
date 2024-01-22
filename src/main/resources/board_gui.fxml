@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.grawgo.klient.BoardSetupController">
+    <BorderPane prefHeight="837.0" prefWidth="837.0">
+        <center>
+            <GridPane fx:id="board" alignment="CENTER" gridLinesVisible="true" prefHeight="837.0" prefWidth="737.0" snapToPixel="false" style="-fx-background-color: tan;" BorderPane.alignment="CENTER">
+
+                <padding>
+                    <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+                </padding>
+            </GridPane>
+        </center>
+        <left>
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="25.0" style="-fx-background-color: tan;">
+                <children>
+                    <Button mnemonicParsing="false" text="Skip move" />
+                    <Button mnemonicParsing="false" text="Disconnect" />
+                </children>
+                <padding>
+                    <Insets left="10.0" top="365.0" />
+                </padding>
+            </VBox>
+        </left></BorderPane>
+</StackPane>

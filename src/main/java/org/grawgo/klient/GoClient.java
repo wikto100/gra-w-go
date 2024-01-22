@@ -3,7 +3,7 @@ package org.grawgo.klient;
 import java.net.*;
 import java.io.*;
 
-public class GoClient {
+public class GoClient implements Runnable {
     private static PrintWriter clientOut;
     private static BufferedReader inFromServer;
     private static BufferedReader clientIn;
@@ -106,7 +106,8 @@ public class GoClient {
 
     }
 
-    public static void main(String[] args) {
+    @Override
+    public void run() {
         boolean isPlaying;
         try {
             joinServer();
