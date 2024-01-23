@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class ClientGUI extends Application {
@@ -15,12 +14,12 @@ public class ClientGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        GoClient goClient = new GoClient();
-        Platform.runLater(goClient);
+       // GoClient goClient = new GoClient();
+       // Thread clThread = new Thread(goClient);
+       // clThread.start();
         changeScene("/size_select.fxml");
 
 
-        // Zrob stage (FXML)
         Scene scene = new Scene(root, 600, 400);
         primaryStage.setTitle("Go Client");
         primaryStage.setScene(scene);
@@ -30,6 +29,8 @@ public class ClientGUI extends Application {
         sizeSelectController.confirmSizeButton.setOnAction(actionEvent -> {
             try {
                 if (sizeSelectController.wasSelected()) {
+                    // change the scene if the connection was successful
+
                     changeScene("/board_gui.fxml");
                     BoardSetupController boardSetupController = loader.getController();
                     boardSetupController.setBoardSize(sizeSelectController.getSizeFromRadio());

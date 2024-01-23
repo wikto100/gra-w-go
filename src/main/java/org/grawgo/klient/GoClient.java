@@ -3,14 +3,13 @@ package org.grawgo.klient;
 import java.net.*;
 import java.io.*;
 
-public class GoClient implements Runnable {
+public class GoClient{
     private static PrintWriter clientOut;
     private static BufferedReader inFromServer;
     private static BufferedReader clientIn;
     private static ClientCommandParser clientParser;
     private static Socket socket;
-    private static boolean joinedFlag = false;
-
+    private static ClientState joinedState = ClientState.SIZE ;
     private static void joinServer() throws IOException {
         socket = new Socket("localhost", 4444);
         clientOut = new PrintWriter(socket.getOutputStream(), true);
@@ -18,13 +17,27 @@ public class GoClient implements Runnable {
         clientIn = new BufferedReader(new InputStreamReader(System.in));
         clientParser = new ClientCommandParser();
     }
-
+    
     private static boolean play() throws IOException {
         String userInput;
         String parsedUserInput;
         String response;
         String command;
-        String userPrompt = joinedFlag ? "Input move: " : "Pick color (&wait): ";
+        String userPrompt = "";
+        switch (joinedState){
+            case SIZE:
+                userPrompt = "Pick size (19|13|9): ";
+                break;
+            case COLOR:
+                userPrompt = "Pick color (white|black) [& wait] : ";
+                break;
+            case PLAYING:
+                userPrompt = "Input move: ";
+                break;
+            case GAME_LOAD:
+                userPrompt = "Load game: ";
+                break;
+        }
         System.out.print(userPrompt);
         userInput = clientIn.readLine();
         parsedUserInput = clientParser.parseInputFromUser(userInput);
@@ -32,6 +45,10 @@ public class GoClient implements Runnable {
         response = inFromServer.readLine();
         command = clientParser.parseCommandFromServer(response);
         switch (command) {
+            case "SIZE_RESPONSE":
+                System.out.println("Board size set to: " + clientParser.parseDataFromServer(response, 0));
+                joinedState = ClientState.COLOR;
+                return true;
             case "JOIN_SUCCESSFUL_RESPONSE":
                 System.out.println("Playing as " + userInput);
                 System.out.println(" __________________________ GO ___________________________");
@@ -45,13 +62,10 @@ public class GoClient implements Runnable {
                 }
                 System.out.print(clientParser.parseBoardFromServer(response));
                 System.out.println(" __________________________ ** ___________________________");
-                joinedFlag = true;
+                joinedState = ClientState.PLAYING;
                 return true;
             case "JOIN_FAILED_RESPONSE":
                 System.out.println("Select the other color!!");
-                return true;
-            case "COLOR_PICK_RESPONSE":
-                System.out.println("Pick black/white!!");
                 return true;
             case "DISCONNECT_RESPONSE":
                 System.out.println("disconnecting...");
@@ -106,8 +120,7 @@ public class GoClient implements Runnable {
 
     }
 
-    @Override
-    public void run() {
+    public static void main(String[] args)  {
         boolean isPlaying;
         try {
             joinServer();

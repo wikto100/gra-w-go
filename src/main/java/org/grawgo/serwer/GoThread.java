@@ -2,6 +2,7 @@ package org.grawgo.serwer;
 
 import org.grawgo.core.StoneColor;
 import org.grawgo.serwer.stany.ColorPickingState;
+import org.grawgo.serwer.stany.SizePickingState;
 import org.grawgo.serwer.stany.ThreadState;
 
 import java.io.*;
@@ -20,7 +21,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
         this.socket = socket;
         // zaczytaj stan planszy z serwera (może można to zrobić jakoś lepiej)
         this.serverParser = ServerCommandParser.getInstance();
-        this.currState = new ColorPickingState(this, null);
+        this.currState = new SizePickingState(this, null);
         this.player = null;
         this.isRunning = true;
         // w zaleznosci od tego jaki jest stan, ustaw responsy
@@ -46,6 +47,9 @@ public class GoThread extends Thread implements ServerCommandInterface {
                     parsedCommand = serverParser.parseCommand(command);
 
                     switch (parsedCommand) {
+                        case "size":
+                            handleSizeChange(serverParser.parseSize(command));
+                            break;
                         case "white":
                             handleWhitePick();
                             break;
@@ -97,6 +101,11 @@ public class GoThread extends Thread implements ServerCommandInterface {
 
     public void changeState(ThreadState threadState) {
         this.currState = threadState;
+    }
+
+    @Override
+    public void handleSizeChange(int size) {
+        currState.handleSizeChange(size);
     }
 
     @Override

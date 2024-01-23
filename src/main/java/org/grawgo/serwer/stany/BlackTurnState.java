@@ -75,21 +75,16 @@ public class BlackTurnState extends ThreadState {
 
     @Override
     public void handleExit() throws InterruptedException {
-        // ok i disconnect
-        myPlayer.out.println("DISCONNECT_RESPONSE$0");
-        if (otherPlayer != null)
-            otherPlayer.out.println("DISCONNECT_RESPONSE$0");
-        System.out.println("disconnecting...");
-        Thread.sleep(1000);
-        myPlayer.setRunning(false);
-        if (otherPlayer != null)
-            otherPlayer.setRunning(false);
+        super.handleExit();
     }
 
     @Override
     public void handleInvalid() {
-        // jak wszedzie
-        myPlayer.out.println("INVALID_RESPONSE$0");
-        System.out.println("invalid command");
+        super.handleInvalid();
+    }
+
+    @Override
+    public void handleSizeChange(int size) {
+        handleInvalid();
     }
 }

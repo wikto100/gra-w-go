@@ -67,29 +67,26 @@ public class ColorPickingState extends ThreadState {
 
     @Override
     public void handlePlace(String command) {
-        myPlayer.out.println("COLOR_PICK_RESPONSE$" + myPlayer.getPlayerString());
+        handleInvalid();
     }
 
     @Override
     public void handleSkip() {
-        myPlayer.out.println("COLOR_PICK_RESPONSE$" + myPlayer.getPlayerString());
+        handleInvalid();
     }
 
     @Override
     public void handleExit() throws InterruptedException {
-        myPlayer.out.println("DISCONNECT_RESPONSE$0");
-        if(otherPlayer != null)
-            otherPlayer.out.println("DISCONNECT_RESPONSE$0");
-        System.out.println("disconnecting...");
-        Thread.sleep(1000);
-        myPlayer.setRunning(false);
-        if(otherPlayer != null)
-            otherPlayer.setRunning(false);
+        super.handleExit();
     }
 
     @Override
     public void handleInvalid() {
-        myPlayer.out.println("INVALID_RESPONSE$0");
-        System.out.println("invalid command");
+        super.handleInvalid();
+    }
+
+    @Override
+    public void handleSizeChange(int size) {
+        handleInvalid();
     }
 }

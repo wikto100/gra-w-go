@@ -26,7 +26,11 @@ public class ServerCommandParser {
     public String parseCommand(String input) {
         return input.split("\\$")[0];
     }
-
+    public int parseSize(String input) {
+        input = input.split("\\$")[1];
+        input = input.replace("|","");
+        return Integer.parseInt(input);
+    }
 
     public int[] parseCoords(String input) {
         String data = input.split("\\$")[1];

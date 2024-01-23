@@ -2,6 +2,7 @@ package org.grawgo.serwer;
 
 public interface ServerCommandInterface {
     // dobrze by bylo miec wszystkie komendy tutaj
+    void handleSizeChange(int size);
     void handleBlackPick() throws InterruptedException;
 
     void handleWhitePick() throws InterruptedException;

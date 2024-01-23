@@ -9,8 +9,10 @@ public class ClientCommandParser {
         int ARGNO;
         if (command.equals("place")) {
             ARGNO = 3; // place x1 y1
-        } else {
-            ARGNO = 1; // komendy jak exit, disconnect, black, white etc
+        } else if (command.equals("size")){
+            ARGNO = 2;
+        }else{
+            ARGNO = 1;
         }
         command += "$";
         for (int i = 1; i < ARGNO; i++) {

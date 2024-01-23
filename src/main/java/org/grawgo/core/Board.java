@@ -1,6 +1,5 @@
 package org.grawgo.core;
 
-
 //TODO: to nie jest jeszcze thread-safe jako
 // klasa statyczna współdzielona przez GoThready. Zaimplementujmy jakieś locki żeby było ok
 public class Board implements Rules {
@@ -13,13 +12,12 @@ public class Board implements Rules {
 
     public Board(int size) {
         this.size = size;
-        stones = new Stone[size+2][size+2];
-        for(int i=0; i<=size+1; i++){
-            for(int j=0; j<=size+1; j++){
-                if(j==0 || j==size+1 || i==0 || i==size+1){
+        stones = new Stone[size + 2][size + 2];
+        for (int i = 0; i <= size + 1; i++) {
+            for (int j = 0; j <= size + 1; j++) {
+                if (j == 0 || j == size + 1 || i == 0 || i == size + 1) {
                     this.stones[i][j] = new Stone(StoneColor.BORDER);
-                }
-                else{
+                } else {
                     this.stones[i][j] = new Stone(StoneColor.EMPTY);
                 }
             }
@@ -30,9 +28,9 @@ public class Board implements Rules {
     public boolean isLegal(int x, int y) {
         if (!isInBounds(x, y)) {
             return false;
-        } 
-        else if (this.turn!=1 && this.stones[x][y].lastChecked==this.turn-1){ //Ruch na zbite pole jest albo nielegalny albo odbija w ko
-            return false; //Pomylilem sie trzeba zmienic na nie mozna odbic pojedynczego kamienia
+        } else if (this.turn != 1 && this.stones[x][y].lastChecked == this.turn - 1) { // Ruch na zbite pole jest albo
+                                                                                       // nielegalny albo odbija w ko
+            return false; // Pomylilem sie trzeba zmienic na nie mozna odbic pojedynczego kamienia
         }
         return this.stones[x][y].getStoneColor() == StoneColor.EMPTY;
     }
@@ -83,7 +81,8 @@ public class Board implements Rules {
         bottom = this.stones[x + 1][y];
         right = this.stones[x][y + 1];
         left = this.stones[x][y - 1];
-        if (top.getStoneColor() == StoneColor.EMPTY || bottom.getStoneColor() == StoneColor.EMPTY || left.getStoneColor() == StoneColor.EMPTY || right.getStoneColor() == StoneColor.EMPTY) {
+        if (top.getStoneColor() == StoneColor.EMPTY || bottom.getStoneColor() == StoneColor.EMPTY
+                || left.getStoneColor() == StoneColor.EMPTY || right.getStoneColor() == StoneColor.EMPTY) {
             return false;
         }
         if (top.getStoneColor() == ally && top.lastChecked != this.turn) {
@@ -136,7 +135,7 @@ public class Board implements Rules {
             kill(x, y - 1, ally);
         }
     }
-    
+
     @Override
     public String skip() {
         this.turn++;
@@ -147,50 +146,51 @@ public class Board implements Rules {
             return "SKIP_RESPONSE$";
         }
     }
+
     @Override
-    public int countScore(StoneColor color){
-        for(int i=1; i<=this.size; i++){
-            for(int j=1; j<=this.size; j++){
-                if(this.stones[i][j].getStoneColor()==StoneColor.EMPTY && this.stones[i][j].lastChecked!=this.turn && this.stones[i][j].owner==StoneColor.EMPTY){
-                    if(this.isTerritory(i,j,color)){
-                        this.paint(i,j,color);
+    public int countScore(StoneColor color) {
+        for (int i = 1; i <= this.size; i++) {
+            for (int j = 1; j <= this.size; j++) {
+                if (this.stones[i][j].getStoneColor() == StoneColor.EMPTY && this.stones[i][j].lastChecked != this.turn
+                        && this.stones[i][j].owner == StoneColor.EMPTY) {
+                    if (this.isTerritory(i, j, color)) {
+                        this.paint(i, j, color);
                     }
                     this.turn++;
                 }
             }
         }
-        if(color==StoneColor.WHITE){
+        if (color == StoneColor.WHITE) {
             return this.whitePoints;
-        }
-        else{
+        } else {
             return this.blackPoints;
         }
     }
 
-    public boolean isTerritory(int x,int y,StoneColor color){
-        this.stones[x][y].lastChecked=this.turn;
-        if(this.stones[x][y].getStoneColor()==color || this.stones[x][y].getStoneColor()==StoneColor.BORDER){
+    public boolean isTerritory(int x, int y, StoneColor color) {
+        this.stones[x][y].lastChecked = this.turn;
+        if (this.stones[x][y].getStoneColor() == color || this.stones[x][y].getStoneColor() == StoneColor.BORDER) {
             return true;
         }
-        if(this.stones[x][y].getStoneColor()!=StoneColor.EMPTY){
+        if (this.stones[x][y].getStoneColor() != StoneColor.EMPTY) {
             return false;
         }
-        if(this.stones[x-1][y].lastChecked!=this.turn){
+        if (this.stones[x - 1][y].lastChecked != this.turn) {
             if (!this.isTerritory(x - 1, y, color)) {
                 return false;
             }
         }
-        if(this.stones[x+1][y].lastChecked!=this.turn){
+        if (this.stones[x + 1][y].lastChecked != this.turn) {
             if (!this.isTerritory(x + 1, y, color)) {
                 return false;
             }
         }
-        if(this.stones[x][y+1].lastChecked!=this.turn){
+        if (this.stones[x][y + 1].lastChecked != this.turn) {
             if (!this.isTerritory(x, y + 1, color)) {
                 return false;
             }
         }
-        if(this.stones[x][y-1].lastChecked!=this.turn){
+        if (this.stones[x][y - 1].lastChecked != this.turn) {
             if (!this.isTerritory(x, y - 1, color)) {
                 return false;
             }
@@ -200,7 +200,7 @@ public class Board implements Rules {
 
     public void paint(int x, int y, StoneColor color) {
         Stone top, right, bottom, left;
-        this.stones[x][y].owner=color;
+        this.stones[x][y].owner = color;
 
         if (color == StoneColor.WHITE) {
             this.whitePoints++;
@@ -230,7 +230,8 @@ public class Board implements Rules {
     public boolean isInBounds(int x, int y) {
         return x >= 1 && x <= this.size && y >= 1 && y <= this.size;
     }
-    //TODO gracze ustalaja ktore grupy sa martwe
+
+    // TODO gracze ustalaja ktore grupy sa martwe
     public String getScores() {
         countScore(StoneColor.WHITE);
         String res = String.valueOf(this.whitePoints);
@@ -251,30 +252,28 @@ public class Board implements Rules {
             }
         }
         stringBuilder.append('|');
-        for (int x = 1; x < this.size+1; x++) {
-            for (int y = 1; y < this.size+1; y++) {
+        for (int x = 1; x < this.size + 1; x++) {
+            for (int y = 1; y < this.size + 1; y++) {
                 if (stones[x][y].getStoneColor() == StoneColor.WHITE) {
-                        //stringBuilder.append(" ⬤ "); Nie obsluguje mi terminal tych znakow
+                    // stringBuilder.append(" ⬤ "); Nie obsluguje mi terminal tych znakow
                     stringBuilder.append(" W ");
-                } 
-                else if (stones[x][y].getStoneColor() == StoneColor.BLACK) {
-                        //stringBuilder.append(" ◯ ");
-                        stringBuilder.append(" B ");
-                    }
-                else {
-                    //stringBuilder.append(" ┼ ");
+                } else if (stones[x][y].getStoneColor() == StoneColor.BLACK) {
+                    // stringBuilder.append(" ◯ ");
+                    stringBuilder.append(" B ");
+                } else {
+                    // stringBuilder.append(" ┼ ");
                     stringBuilder.append(" + ");
                 }
             }
             stringBuilder.append(" ").append(x);
             stringBuilder.append('|');
 
-
         }
         return stringBuilder.toString();
     }
-    //Do testow
-    public Stone getStone(int x, int y){
+
+    // Do testow
+    public Stone getStone(int x, int y) {
         return this.stones[x][y];
     }
 }

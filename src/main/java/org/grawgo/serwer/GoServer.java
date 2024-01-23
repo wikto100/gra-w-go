@@ -94,4 +94,8 @@ public class GoServer {
         return blackConnected;
     }
 
+    public static void resetBoard(int size) {
+        board = new Board(size);
+    }
+
 }
