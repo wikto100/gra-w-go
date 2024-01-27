@@ -4,7 +4,9 @@ public class Board implements Rules {
     private final Stone[][] stones;
     private final int size;
     private volatile boolean previouslySkipped = false;
-    private int turn = 1;
+    private int turn = 1; //isDead jednak potrzebuje nowej tury na kazde wywolanie
+    private int lastMove = 1; //ostatni zaakceptowany ruch  (do Ko)
+    private int realTurn = 1; //tura do db
     private int whitePoints = 0;
     private int blackPoints = 0;
     private boolean isLogged = false;
@@ -24,42 +26,89 @@ public class Board implements Rules {
     }
 
     @Override
-    public boolean isLegal(int x, int y) {
+    public boolean isLegal(int x, int y, StoneColor color, StoneColor enemy) {
         if (!isInBounds(x, y)) {
             return false;
-        } else if (this.turn != 1 && this.stones[x][y].lastChecked == this.turn - 1) { // Ruch na zbite pole jest albo
-            // nielegalny albo odbija w ko
-            return false; // Pomylilem sie trzeba zmienic na nie mozna odbic pojedynczego kamienia
+        } else if (isKo(x, y, color, enemy)) {
+            return false;
         }
         return this.stones[x][y].getStoneColor() == StoneColor.EMPTY;
+    }
+
+    public boolean isKo(int x, int y, StoneColor color, StoneColor enemy){
+        if (this.stones[x][y].lastChecked == 0 || this.stones[x][y].lastChecked <= this.lastMove - 4){
+            return false;
+        }
+        StoneColor top, right, bottom, left;
+        top = this.stones[x - 1][y].getStoneColor();
+        bottom = this.stones[x + 1][y].getStoneColor();
+        right = this.stones[x][y + 1].getStoneColor();
+        left = this.stones[x][y - 1].getStoneColor();
+        if (top == StoneColor.EMPTY || bottom == StoneColor.EMPTY || right == StoneColor.EMPTY || left == StoneColor.EMPTY){
+            return false;
+        }
+        if (top == enemy){
+            if ((this.stones[x - 1][y - 1].getStoneColor() == color || this.stones[x - 1][y - 1].getStoneColor() == StoneColor.BORDER)
+             && (this.stones[x - 2][y].getStoneColor() == color || this.stones[x - 2][y].getStoneColor() == StoneColor.BORDER)
+             && (this.stones[x - 1][y + 1].getStoneColor() == color || this.stones[x - 1][y + 1].getStoneColor() == StoneColor.BORDER)){
+                return true;
+             }
+        }
+        if (bottom == enemy){
+            if ((this.stones[x + 1][y - 1].getStoneColor() == color || this.stones[x + 1][y - 1].getStoneColor() == StoneColor.BORDER)
+             && (this.stones[x + 2][y].getStoneColor() == color || this.stones[x + 2][y].getStoneColor() == StoneColor.BORDER)
+             && (this.stones[x + 1][y + 1].getStoneColor() == color || this.stones[x + 1][y + 1].getStoneColor() == StoneColor.BORDER)){
+                return true;
+             }
+        }
+        if (right == enemy){
+            if ((this.stones[x - 1][y + 1].getStoneColor() == color || this.stones[x - 1][y + 1].getStoneColor() == StoneColor.BORDER)
+             && (this.stones[x][y + 2].getStoneColor() == color || this.stones[x][y + 2].getStoneColor() == StoneColor.BORDER)
+             && (this.stones[x + 1][y + 1].getStoneColor() == color || this.stones[x + 1][y + 1].getStoneColor() == StoneColor.BORDER)){
+                return true;
+             }
+        }
+        if (left == enemy){
+            if ((this.stones[x - 1][y - 1].getStoneColor() == color || this.stones[x - 1][y - 1].getStoneColor() == StoneColor.BORDER)
+             && (this.stones[x][y - 2].getStoneColor() == color || this.stones[x][y - 2].getStoneColor() == StoneColor.BORDER)
+             && (this.stones[x + 1][y - 1].getStoneColor() == color || this.stones[x + 1][y - 1].getStoneColor() == StoneColor.BORDER)){
+                return true;
+             }
+        }
+        return false;
     }
 
     @Override
     public boolean placeStone(int[] coords, StoneColor color, StoneColor enemy) {
         int x = coords[0];
         int y = coords[1];
-        System.out.println("Turn " + this.turn);
-        if (isLegal(x, y)) {
+        System.out.println("Turn " + this.realTurn);
+        if (isLegal(x, y, color, enemy)) {
             this.stones[x][y].setStoneColor(color);
             if (this.isDead(x - 1, y, enemy)) {
                 this.kill(x - 1, y, enemy);
             }
+            this.turn++;
             if (this.isDead(x + 1, y, enemy)) {
                 this.kill(x + 1, y, enemy);
             }
+            this.turn++;
             if (this.isDead(x, y + 1, enemy)) {
                 this.kill(x, y + 1, enemy);
             }
+            this.turn++;
             if (this.isDead(x, y - 1, enemy)) {
                 this.kill(x, y - 1, enemy);
             }
+            this.turn++;
             if (this.isDead(x, y, color)) {
                 this.stones[x][y].setStoneColor(StoneColor.EMPTY);
                 System.out.println("illegal move");
                 return false;
             } else {
                 this.previouslySkipped = false;
-                this.turn++;
+                this.realTurn++;
+                this.lastMove = this.turn;
                 System.out.println("move accepted");
                 return true;
             }
@@ -137,7 +186,10 @@ public class Board implements Rules {
 
     @Override
     public String skip() {
-        this.turn++;
+        System.out.println("Turn " + this.realTurn);
+        this.turn=this.turn+4;
+        this.lastMove=this.lastMove+4;
+        this.realTurn++;
         if (previouslySkipped) {
             return "DECIDING_RESPONSE$";
         } else {
@@ -152,10 +204,10 @@ public class Board implements Rules {
             for (int j = 1; j <= this.size; j++) {
                 if (this.stones[i][j].getStoneColor() == StoneColor.EMPTY && this.stones[i][j].lastChecked != this.turn
                         && this.stones[i][j].owner == StoneColor.EMPTY) {
+                    this.turn++;
                     if (this.isTerritory(i, j, color)) {
                         this.paint(i, j, color);
                     }
-                    this.turn++;
                 }
             }
         }
@@ -293,11 +345,13 @@ public class Board implements Rules {
     }
 
     public int getTurn() {
-        return this.turn;
+        return this.realTurn;
     }
 
     public void setTurn(int turn) {
+        this.realTurn = turn;
         this.turn = turn;
+        this.lastMove = turn;
     }
 
     public void setBoard(String serialized) {
