@@ -1,6 +1,5 @@
 package org.grawgo.klient;
 
-//TODO parser wiadomosci z serwera
 public class ClientCommandParser {
     String parseInputFromUser(String input) {
         String[] splitInput = input.split("\\s+");
@@ -9,15 +8,19 @@ public class ClientCommandParser {
         int ARGNO;
         if (command.equals("place")) {
             ARGNO = 3; // place x1 y1
-        } else if (command.equals("size")){
+        } else if (command.equals("size") || command.equals("load")){
             ARGNO = 2;
         }else{
             ARGNO = 1;
         }
         command += "$";
-        for (int i = 1; i < ARGNO; i++) {
-            dataBuilder.append(splitInput[i]);
-            dataBuilder.append('|');
+        try {
+            for (int i = 1; i < ARGNO; i++) {
+                dataBuilder.append(splitInput[i]);
+                dataBuilder.append('|');
+            }
+        }catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException){
+            return "";
         }
         return (command + dataBuilder);
     }

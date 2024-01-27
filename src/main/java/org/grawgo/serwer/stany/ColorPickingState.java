@@ -89,4 +89,24 @@ public class ColorPickingState extends ThreadState {
     public void handleSizeChange(int size) {
         handleInvalid();
     }
+
+    @Override
+    public void handleLoad(int gameno) {
+        handleInvalid();
+    }
+
+    @Override
+    public void handlePrev() {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleNext() {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleConfirm() {
+        handleInvalid();
+    }
 }

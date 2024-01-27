@@ -1,42 +1,47 @@
 package org.grawgo.serwer;
 
 import org.grawgo.core.Board;
+import org.grawgo.serwer.db.GameLoader;
+import org.grawgo.serwer.db.GameLogger;
 
 import java.io.*;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class GoServer {
     // instancja board przekazywana każdemu wątkowi do modyfikacji
-    // TODO: board powinien być thread-safe
     // TODO: nowa plansza po zakonczeniu gry
     private static volatile Board board;
     private static volatile boolean whiteConnected = false;
     private static volatile boolean blackConnected = false;
     public static volatile ArrayList<GoThread> threads = new ArrayList<>();
-
+    private static boolean serverActive = true;
     public static void main(String[] args) {
-        //TODO: zaimplementuj zmianę rozmiaru planszy
         board = new Board(19);
-
         try (ServerSocket serverSocket = new ServerSocket(4444)) {
             System.out.println("Server active");
             //Laczenie klienta
-            while (true) {
+            while (serverActive) {
                 Socket socket = serverSocket.accept();
                 // wątki są w stanie ColorPicking
                 threads.add(new GoThread(socket));
                 threads.get(threads.size() - 1).start();
                 // zabij wszystkie wątki na zamknieciu serwera
                 System.out.println("New client connected");
+
             }
         } catch (IOException ex) {
             System.out.println("Server exception: " + ex.getMessage());
             ex.printStackTrace();
+        } finally {
+            threads.clear();
+            GameLogger.close();
+            GameLoader.close();
         }
     }
 
-    // TODO: nie jestem pewny tego rozwiązania
     public static Board getBoard() {
         return board;
     }
@@ -50,7 +55,9 @@ public class GoServer {
     }
 
     public static void reset(GoThread player) {
-        if (player.getPlayerString().equals("white")) {
+        String playerString = player.getPlayerString();
+        if (playerString == null) return;
+        if (playerString.equals("white")) {
             whiteConnected = false;
         } else {
             blackConnected = false;

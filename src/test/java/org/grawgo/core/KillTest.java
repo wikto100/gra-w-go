@@ -1,4 +1,4 @@
-package org.grawgo.serwer;
+package org.grawgo.core;
 import org.grawgo.core.Board;
 import org.grawgo.core.Stone;
 import org.grawgo.core.StoneColor;

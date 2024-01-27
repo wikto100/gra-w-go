@@ -1,7 +1,5 @@
 package org.grawgo.core;
 
-//TODO: to nie jest jeszcze thread-safe jako
-// klasa statyczna współdzielona przez GoThready. Zaimplementujmy jakieś locki żeby było ok
 public class Board implements Rules {
     private final Stone[][] stones;
     private final int size;
@@ -9,6 +7,7 @@ public class Board implements Rules {
     private int turn = 1;
     private int whitePoints = 0;
     private int blackPoints = 0;
+    private boolean isLogged = false;
 
     public Board(int size) {
         this.size = size;
@@ -29,7 +28,7 @@ public class Board implements Rules {
         if (!isInBounds(x, y)) {
             return false;
         } else if (this.turn != 1 && this.stones[x][y].lastChecked == this.turn - 1) { // Ruch na zbite pole jest albo
-                                                                                       // nielegalny albo odbija w ko
+            // nielegalny albo odbija w ko
             return false; // Pomylilem sie trzeba zmienic na nie mozna odbic pojedynczego kamienia
         }
         return this.stones[x][y].getStoneColor() == StoneColor.EMPTY;
@@ -191,9 +190,7 @@ public class Board implements Rules {
             }
         }
         if (this.stones[x][y - 1].lastChecked != this.turn) {
-            if (!this.isTerritory(x, y - 1, color)) {
-                return false;
-            }
+            return this.isTerritory(x, y - 1, color);
         }
         return true;
     }
@@ -255,13 +252,10 @@ public class Board implements Rules {
         for (int x = 1; x < this.size + 1; x++) {
             for (int y = 1; y < this.size + 1; y++) {
                 if (stones[x][y].getStoneColor() == StoneColor.WHITE) {
-                    // stringBuilder.append(" ⬤ "); Nie obsluguje mi terminal tych znakow
                     stringBuilder.append(" W ");
                 } else if (stones[x][y].getStoneColor() == StoneColor.BLACK) {
-                    // stringBuilder.append(" ◯ ");
                     stringBuilder.append(" B ");
                 } else {
-                    // stringBuilder.append(" ┼ ");
                     stringBuilder.append(" + ");
                 }
             }
@@ -272,8 +266,54 @@ public class Board implements Rules {
         return stringBuilder.toString();
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public int getBlackPoints() {
+        return blackPoints;
+    }
+
+    public int getWhitePoints() {
+        return whitePoints;
+    }
+
+    public boolean isLogged() {
+        return this.isLogged;
+    }
+
+    public void setLogged(boolean logged) {
+        isLogged = logged;
+    }
+
     // Do testow
     public Stone getStone(int x, int y) {
         return this.stones[x][y];
+    }
+
+    public int getTurn() {
+        return this.turn;
+    }
+
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
+    public void setBoard(String serialized) {
+        serialized = serialized.replaceAll("[\\s\\d]", "");
+        String[] rows = serialized.split("\\|");
+        for (int i = 0; i < rows.length; i++) {
+            String row = rows[i];
+            for (int j = 0; j < row.length(); j++) {
+                char x = row.charAt(j);
+                if (x == 'B') {
+                    stones[i][j+1] = new Stone(StoneColor.BLACK);
+                } else if (x == 'W') {
+                    stones[i][j+1] = new Stone(StoneColor.WHITE);
+                } else{
+                    stones[i][j+1] = new Stone(StoneColor.EMPTY);
+                }
+            }
+        }
     }
 }

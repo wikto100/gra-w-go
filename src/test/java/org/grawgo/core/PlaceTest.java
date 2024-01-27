@@ -1,9 +1,7 @@
-package org.grawgo.serwer;
-import org.grawgo.core.Board;
-import org.grawgo.core.StoneColor;
+package org.grawgo.core;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class PlaceTest {
     private final Board testBoard = new Board(19);
@@ -11,11 +9,9 @@ public class PlaceTest {
 
     @Test
     public void offBoardTest(){
-        int[] coords = new int[2];
-        coords[0] = 0;
-        coords[1] = 0;
+        int[] coords = {0,0};
         success=testBoard.placeStone(coords, StoneColor.WHITE,StoneColor.BLACK);
-        assertEquals(false,success);
+        assertFalse(success);
     }
 
     @Test
@@ -36,7 +32,7 @@ public class PlaceTest {
         coords[0] = 5;
         coords[1] = 5;
         success=testBoard.placeStone(coords, StoneColor.BLACK,StoneColor.WHITE);
-        assertEquals(false,success);
+        assertFalse(success);
     }
 
     @Test
@@ -47,7 +43,7 @@ public class PlaceTest {
                 coords[0] = i;
                 coords[1] = j;
                 success=testBoard.placeStone(coords, StoneColor.WHITE,StoneColor.BLACK);
-                assertEquals(true,success);
+                assertTrue(success);
             }
         }
     }
@@ -79,10 +75,10 @@ public class PlaceTest {
         coords[0] = 2;
         coords[1] = 3;
         success=testBoard.placeStone(coords, StoneColor.WHITE,StoneColor.BLACK);
-        assertEquals(true,success);
+        assertTrue(success);
         coords[0] = 2;
         coords[1] = 2;
         success=testBoard.placeStone(coords, StoneColor.BLACK,StoneColor.WHITE);
-        assertEquals(false,success);
+        assertFalse(success);
     }
 }

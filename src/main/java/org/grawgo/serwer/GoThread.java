@@ -41,7 +41,7 @@ public class GoThread extends Thread implements ServerCommandInterface {
                 //TODO: Sprawdz czy wlasciwa tura
                 command = in.readLine();
                 if (command != null) {
-                    if(command.trim().equals("$")){
+                    if(command.trim().equals("$") || command.isEmpty()){
                         handleInvalid();
                     }
                     parsedCommand = serverParser.parseCommand(command);
@@ -49,6 +49,18 @@ public class GoThread extends Thread implements ServerCommandInterface {
                     switch (parsedCommand) {
                         case "size":
                             handleSizeChange(serverParser.parseSize(command));
+                            break;
+                        case "load":
+                            handleLoad(serverParser.parseSize(command));
+                            break;
+                        case "prev":
+                            handlePrev();
+                            break;
+                        case "next":
+                            handleNext();
+                            break;
+                        case "confirm":
+                            handleConfirm();
                             break;
                         case "white":
                             handleWhitePick();
@@ -106,6 +118,26 @@ public class GoThread extends Thread implements ServerCommandInterface {
     @Override
     public void handleSizeChange(int size) {
         currState.handleSizeChange(size);
+    }
+
+    @Override
+    public void handleLoad(int gameno) {
+        currState.handleLoad(gameno);
+    }
+
+    @Override
+    public void handlePrev() {
+        currState.handlePrev();
+    }
+
+    @Override
+    public void handleNext() {
+        currState.handleNext();
+    }
+
+    @Override
+    public void handleConfirm() {
+        currState.handleConfirm();
     }
 
     @Override

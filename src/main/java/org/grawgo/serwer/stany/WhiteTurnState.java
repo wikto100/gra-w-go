@@ -3,6 +3,7 @@ package org.grawgo.serwer.stany;
 import org.grawgo.core.StoneColor;
 import org.grawgo.serwer.GoServer;
 import org.grawgo.serwer.GoThread;
+import org.grawgo.serwer.db.GameLogger;
 
 public class WhiteTurnState extends ThreadState {
     public WhiteTurnState(GoThread player1, GoThread player2) {
@@ -26,12 +27,12 @@ public class WhiteTurnState extends ThreadState {
         boolean success;
         if (myPlayer.getPlayerString().equals("white")) {
             coords = serverParser.parseCoords(command);
-            success=GoServer.getBoard().placeStone(coords, StoneColor.WHITE, StoneColor.BLACK);
-            
+            success = GoServer.getBoard().placeStone(coords, StoneColor.WHITE, StoneColor.BLACK);
             if(success){
                 response = serverParser.parseBoard("PLACE_RESPONSE$");
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
+                GameLogger.logBoard(GoServer.getBoard().getTurn(),GoServer.getBoard().printBoard());
                 otherPlayer.changeState(new BlackTurnState(otherPlayer, myPlayer));
                 myPlayer.changeState(new BlackTurnState(myPlayer, otherPlayer));
             }
@@ -81,6 +82,26 @@ public class WhiteTurnState extends ThreadState {
 
     @Override
     public void handleSizeChange(int size) {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleLoad(int gameno) {
+        handleInvalid();
+    }
+
+    @Override
+    public void handlePrev() {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleNext() {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleConfirm() {
         handleInvalid();
     }
 }

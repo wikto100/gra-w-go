@@ -3,6 +3,7 @@ package org.grawgo.serwer.stany;
 import org.grawgo.core.StoneColor;
 import org.grawgo.serwer.GoServer;
 import org.grawgo.serwer.GoThread;
+import org.grawgo.serwer.db.GameLogger;
 
 public class BlackTurnState extends ThreadState {
     public BlackTurnState(GoThread player1, GoThread player2) {
@@ -29,16 +30,17 @@ public class BlackTurnState extends ThreadState {
         // tylko jesli czarny
         if (myPlayer.getPlayerString().equals("black")) {
             coords = serverParser.parseCoords(command);
-            success=GoServer.getBoard().placeStone(coords, StoneColor.BLACK, StoneColor.WHITE);
+            success = GoServer.getBoard().placeStone(coords, StoneColor.BLACK, StoneColor.WHITE);
 
-            if(success){
+            if (success) {
                 response = serverParser.parseBoard("PLACE_RESPONSE$");
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
+                GameLogger.logGame(GoServer.getBoard().getSize(),0,0);
+                GameLogger.logBoard(GoServer.getBoard().getTurn(),GoServer.getBoard().printBoard());
                 otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
                 myPlayer.changeState(new WhiteTurnState(myPlayer, otherPlayer));
-            }
-            else{
+            } else {
                 myPlayer.out.println("ILLEGAL_MOVE_RESPONSE$");
             }
         } else {
@@ -85,6 +87,26 @@ public class BlackTurnState extends ThreadState {
 
     @Override
     public void handleSizeChange(int size) {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleLoad(int gameno) {
+        handleInvalid();
+    }
+
+    @Override
+    public void handlePrev() {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleNext() {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleConfirm() {
         handleInvalid();
     }
 }
