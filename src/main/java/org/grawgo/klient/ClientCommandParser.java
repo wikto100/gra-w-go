@@ -6,7 +6,7 @@ public class ClientCommandParser {
         StringBuilder dataBuilder = new StringBuilder();
         String command = splitInput[0];
         int ARGNO;
-        if (command.equals("place")) {
+        if (command.equals("place") || command.equals("dead")) {
             ARGNO = 3; // place x1 y1
         } else if (command.equals("size") || command.equals("load")){
             ARGNO = 2;

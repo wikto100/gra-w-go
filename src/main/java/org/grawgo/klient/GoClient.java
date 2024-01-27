@@ -38,6 +38,9 @@ public class GoClient {
             case GAME_LOAD:
                 userPrompt = "Load game ( load x ) & ( prev | next | confirm ): ";
                 break;
+            case DECIDING:
+                userPrompt = "Decide stone life (dead x y / confirm): ";
+                break;
         }
         System.out.print(userPrompt);
         userInput = clientIn.readLine();
@@ -100,10 +103,12 @@ public class GoClient {
                 System.out.println(" ___________________________ ** ___________________________");
                 System.out.println("OK! Waiting for other players move...");
                 response = inFromServer.readLine();
-                if (clientParser.parseCommandFromServer(response).equals("END_GAME_RESPONSE")) {
-                    System.out.println("THE GAME HAS ENDED");
-                    System.out.println("WHITE: " + clientParser.parseDataFromServer(response, 0) + " BLACK: " + clientParser.parseDataFromServer(response, 1));
-                    return false;
+                if (clientParser.parseCommandFromServer(response).equals("DECIDING_RESPONSE")) {
+                    System.out.println("ID: " + clientParser.parseDataFromServer(response, 0) +" WHITE: "
+                            + clientParser.parseDataFromServer(response, 1) + " BLACK: " +
+                            clientParser.parseDataFromServer(response, 2));
+                    joinedState = ClientState.DECIDING;
+                    return true;
                 } else if (clientParser.parseCommandFromServer(response).equals("DISCONNECT_RESPONSE")) {
                     System.out.println("OPPONENT DISCONNECTED");
                     return false;
@@ -127,9 +132,15 @@ public class GoClient {
             case "INVALID_TURN_RESPONSE":
                 System.out.println("Not your turn!");
                 return true;
+            case "DECIDING_RESPONSE":
+                joinedState = ClientState.DECIDING;
+                return true;
+            case "DEAD_RESPONSE":
+                System.out.println("TODO: Jakis kamien umarl!!!");
+                return true;
             case "END_GAME_RESPONSE":
                 System.out.println("THE GAME HAS ENDED");
-                System.out.println("WHITE: " + clientParser.parseDataFromServer(response, 0) + " BLACK: " + clientParser.parseDataFromServer(response, 1));
+                System.out.println("ID: " + clientParser.parseDataFromServer(response, 0) + " WHITE: " + clientParser.parseDataFromServer(response, 1) + " BLACK: " + clientParser.parseDataFromServer(response, 2));
                 return false;
             default:
                 System.out.println("ERROR UNHANDLED:" + command);
@@ -142,16 +153,7 @@ public class GoClient {
         boolean isPlaying;
         try {
             joinServer();
-            System.out.print(
-                    "Instrukcja:\n" +
-                    "1. Wybierz rozmiar planszy (size), albo pomiń ustawienia (skip)\n" +
-                    "2. Załaduj grę z bazy (load x) (jeśli nie ma gier, wpisz load cokolwiek)\n" +
-                    "3. Przewijaj tury z załadowanej gry (prev-poprzednia/next-następna)\n" +
-                    "4. Potwierdź wybór tury (confirm)\n"+
-                    "5. Wybierz kolor (white/black) i zaczekaj\n" +
-                    "6. Ustawianie kamieni - (place x y)\n" +
-                    "7. Pomijanie tury - (skip)\n" +
-                    "8. Poddanie gry (exit)\n");
+            System.out.print("Instrukcja:\n" + "1. Wybierz rozmiar planszy (size), albo pomiń ustawienia (skip)\n" + "2. Załaduj grę z bazy (load x) (jeśli nie ma gier, wpisz load cokolwiek)\n" + "3. Przewijaj tury z załadowanej gry (prev-poprzednia/next-następna)\n" + "4. Potwierdź wybór tury (confirm)\n" + "5. Wybierz kolor (white/black) i zaczekaj\n" + "6. Ustawianie kamieni - (place x y)\n" + "7. Pomijanie tury - (skip)\n" + "8. Poddanie gry (exit)\n");
 
             do {
                 isPlaying = play();

@@ -44,6 +44,11 @@ public class GameLoadingState extends ThreadState {
     }
 
     @Override
+    public void handleDead(String command) {
+        handleInvalid();
+    }
+
+    @Override
     public void handleConfirm() {
         myPlayer.out.println("CONFIRM_RESPONSE$");
         myPlayer.changeState(new ColorPickingState(myPlayer,otherPlayer));

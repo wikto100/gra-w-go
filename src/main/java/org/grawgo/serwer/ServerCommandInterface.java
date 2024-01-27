@@ -8,6 +8,7 @@ public interface ServerCommandInterface {
     void handleLoad(int gameno);
     void handlePrev();
     void handleNext();
+    void handleDead(String command);
     void handleConfirm();
     void handleBlackPick() throws InterruptedException;
 

@@ -139,7 +139,7 @@ public class Board implements Rules {
     public String skip() {
         this.turn++;
         if (previouslySkipped) {
-            return "END_GAME_RESPONSE$";
+            return "DECIDING_RESPONSE$";
         } else {
             this.previouslySkipped = true;
             return "SKIP_RESPONSE$";
@@ -235,6 +235,7 @@ public class Board implements Rules {
         res += "|";
         countScore(StoneColor.BLACK);
         res += String.valueOf(this.blackPoints);
+        res += "|";
         return res;
     }
 

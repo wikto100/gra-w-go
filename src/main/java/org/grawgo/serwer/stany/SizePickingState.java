@@ -43,6 +43,11 @@ public class SizePickingState extends ThreadState {
     }
 
     @Override
+    public void handleDead(String command) {
+        handleInvalid();
+    }
+
+    @Override
     public void handleConfirm() {
         handleInvalid();
     }

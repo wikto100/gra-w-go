@@ -81,6 +81,10 @@ public class GameLogger {
         GameLogger.currGameID = currGameID;
     }
 
+    public static int getCurrGameID() {
+        return currGameID;
+    }
+
     public static void close() {
         if (statement != null) {
             try {

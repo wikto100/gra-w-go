@@ -7,8 +7,8 @@ GRANT ALL PRIVILEGES ON GOgames.* TO 'goplayer'@'localhost';
 CREATE TABLE IF NOT EXISTS `GOgames`.`games` (
     `game_id` INT NOT NULL,
      `size` INT NOT NULL,
-     `black_points` VARCHAR(45) NOT NULL,
-     `white_points` VARCHAR(45) NOT NULL,
+     `black_points` INT NOT NULL,
+     `white_points` INT NOT NULL,
      PRIMARY KEY (`game_id`)
      );
 CREATE TABLE IF NOT EXISTS `GOgames`.`boards` (

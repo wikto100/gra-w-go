@@ -59,6 +59,9 @@ public class GoThread extends Thread implements ServerCommandInterface {
                         case "next":
                             handleNext();
                             break;
+                        case "dead":
+                            handleDead(command);
+                            break;
                         case "confirm":
                             handleConfirm();
                             break;
@@ -133,6 +136,11 @@ public class GoThread extends Thread implements ServerCommandInterface {
     @Override
     public void handleNext() {
         currState.handleNext();
+    }
+
+    @Override
+    public void handleDead(String command) {
+        currState.handleDead(command);
     }
 
     @Override

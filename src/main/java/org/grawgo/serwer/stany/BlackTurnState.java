@@ -59,13 +59,13 @@ public class BlackTurnState extends ThreadState {
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
                 System.out.println("skipped turn");
-            } else if (response.equals("END_GAME_RESPONSE$")) {
-                response += GoServer.getBoard().getScores();
+            } else if (response.equals("DECIDING_RESPONSE$")) {
+                response = response + GameLogger.getCurrGameID() + "|" + GoServer.getBoard().getScores();
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
-                System.out.println("Ending game");
-                myPlayer.setRunning(false);
-                otherPlayer.setRunning(false);
+                System.out.println("Deciding score");
+                myPlayer.changeState(new DecidingState(myPlayer,otherPlayer));
+                otherPlayer.changeState(new DecidingState(otherPlayer,myPlayer));
                 return;
             }
             otherPlayer.changeState(new WhiteTurnState(otherPlayer, myPlayer));
@@ -102,6 +102,11 @@ public class BlackTurnState extends ThreadState {
 
     @Override
     public void handleNext() {
+        handleInvalid();
+    }
+
+    @Override
+    public void handleDead(String command) {
         handleInvalid();
     }
 
