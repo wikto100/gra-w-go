@@ -1,128 +1,711 @@
-<diagram program="umletino" version="15.1"><zoom_level>5</zoom_level><element><id>UMLClass</id><coordinates><x>225</x><y>525</y><w>105</w><h>85</h></coordinates><panel_attributes>GoClient
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>5</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>220</x>
+      <y>635</y>
+      <w>105</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>GoClient
 --
--clientOut;
--clientIn;
--clientParser
--inFromServer
--socket;
+-clientOut : PrintWriter
+-clientIn : BufferedReader
+-clientParser : ClientCommandParser
+-inFromServer : BufferedReader
+-socket : ServerSocket
+-joinedState
 --
 -joinServer()
 -pickColor()
--play()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>225</x><y>655</y><w>105</w><h>45</h></coordinates><panel_attributes>ClientCommandParser
+-play()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>220</x>
+      <y>770</y>
+      <w>105</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>ClientCommandParser
 --
-~parseInputFromUser
-~parseCommandFromServer
-~parseDataFromServer
-~parseBoardFromServer</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>270</x><y>605</y><w>20</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+~parseInputFromUser()
+~parseCommandFromServer()
+~parseDataFromServer()
+~parseBoardFromServer()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>265</x>
+      <y>720</y>
+      <w>20</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m1=1
-m2=1</panel_attributes><additional_attributes>10;10;10;100</additional_attributes></element><element><id>UMLClass</id><coordinates><x>385</x><y>525</y><w>105</w><h>85</h></coordinates><panel_attributes>GoServer
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>380</x>
+      <y>635</y>
+      <w>105</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>GoServer
 --
--board
--whiteConnected
--blackConnected
-+threads
+-board : Board
+-whiteConnected : boolean
+-blackConnected : boolean
++threads : ArrayList&lt;GoThread&gt;
 --
-+getBoard
++getBoard()
 +connect()
-+disconnect()
++reset()
++getFirstBlackSleeper()
++getFirstWhiteSleeper()
++findOther()
 +isWhiteConnected()
 +isBlackConnected()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>325</x><y>555</y><w>70</w><h>25</h></coordinates><panel_attributes>lt=-
++resetBoard()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>320</x>
+      <y>665</y>
+      <w>70</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>lt=-
 m1=*
 m2=1
-&lt; obsluguje</panel_attributes><additional_attributes>10;20;120;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>540</x><y>525</y><w>105</w><h>175</h></coordinates><panel_attributes>GoThread
+&lt; obsluguje</panel_attributes>
+    <additional_attributes>10.0;20.0;120.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>535</x>
+      <y>635</y>
+      <w>105</w>
+      <h>165</h>
+    </coordinates>
+    <panel_attributes>GoThread
 --
--socket
--currBoard
--serverParser
--currState
-~player
-~input
-~in
-~output;
-+out;
+-socket : Socket
+-serverParser : ServerCommandParser
+-currState : ThreadState
+-player : StoneColor
+-output : OutputStream
+-out : PrintWriter
+-isRunning : boolean
 --
 +run()
 +setPlayer()
++getPlayerString()
++setrunning()
 +changeState()
-+handleBlackPick()
-+handleWhitePick()
-+handlePlace()
-+handleSkip()
-+handleExit()
-+handleInvalid() </panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>485</x><y>560</y><w>65</w><h>20</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+@override 
+ServerCommandInterface</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>670</y>
+      <w>65</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m1=1
-m2=*</panel_attributes><additional_attributes>10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>640</x><y>555</y><w>75</w><h>15</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>130;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>705</x><y>515</y><w>105</w><h>70</h></coordinates><panel_attributes>lw=2
+m2=*</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>635</x>
+      <y>665</y>
+      <w>75</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>130.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>700</x>
+      <y>570</y>
+      <w>105</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>lw=2
 &lt;&lt;interface&gt;&gt;
 ServerCommandInterface
 --
-+handleBlackPick()
-+handleWhitePick()
-+handlePlace()
-+handleSkip()
-+handleExit()
-+handleInvalid() </panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>640</x><y>655</y><w>75</w><h>20</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
++ handleBlackPick( ) : void
++ handleConfirm( ) : void 
++ handleDead( String ) : void 
++ handleExit( ) : void 
++ handleInvalid( ) : void 
++ handleLoad( int ) : void 
++ handleNext( ) : void 
++ handlePlace( String ) : void 
++ handlePrev( ) : void 
++ handleSizeChange( int ) : void 
++ handleSkip( ) : void 
++ handleWhitePick( ) : void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>635</x>
+      <y>765</y>
+      <w>70</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m1=*
-m2=1</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>705</x><y>620</y><w>105</w><h>65</h></coordinates><panel_attributes>ServerCommandParser
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>695</x>
+      <y>730</y>
+      <w>105</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>ServerCommandParser
 --
 -instance
 --
-+getInstance()
-+parseCommand()
-+parseCoords()
-+parseOutput()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>450</x><y>335</y><w>105</w><h>75</h></coordinates><panel_attributes>Board
++getInstance() : ServerCommandParser
++parseCommand() : String
++parseCoords() : int[2]
++parseBoard() : String
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>445</x>
+      <y>370</y>
+      <w>105</w>
+      <h>225</h>
+    </coordinates>
+    <panel_attributes>Board
 --
--stones
--size
--previouslySkipped
+-stones : Stone[][]
+-size : int
+-previouslySkipped : boolean
+-turn : int
+-whitePoints : int
+-blackPoints : int
+-isLogged : boolean
 --
-+isLegal()
-+placeStone()
-+skip()
-+printBoard()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>410</x><y>390</y><w>50</w><h>145</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
++isLegal() : boolean
++placeStone() : boolean
++isDead() : boolean
++kill() : void
++skip() : String
++countScore() : int
++isTerritory() : boolean
++paint() : void
++isInBounds() : boolean
++printBoard() : void
++getSize() : int
++getBlackPoints() : int
++getWhitePoints() : int
++isLogged() : boolean
++setLogged() : void
++getStone : Stone
++setTurn() : void
++setBoard() : void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>405</x>
+      <y>425</y>
+      <w>50</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m1=1
 m2=*
-</panel_attributes><additional_attributes>10;270;10;10;80;10</additional_attributes></element><element><id>Relation</id><coordinates><x>550</x><y>390</y><w>55</w><h>145</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10.0;420.0;10.0;10.0;80.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>545</x>
+      <y>425</y>
+      <w>55</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m1=2
-m2=1</panel_attributes><additional_attributes>80;270;80;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>325</x><y>355</y><w>135</w><h>15</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;10;250;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>225</x><y>350</y><w>105</w><h>45</h></coordinates><panel_attributes>Rules
+m2=1</panel_attributes>
+    <additional_attributes>80.0;420.0;80.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>320</x>
+      <y>390</y>
+      <w>135</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;250.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>220</x>
+      <y>385</y>
+      <w>105</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>Rules
 --
-+isLegal()
-+placeStone()
-+skip()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>450</x><y>245</y><w>105</w><h>40</h></coordinates><panel_attributes>Stone
++isLegal() : boolean
++placeStone() : boolean
++isDead() : boolean
++kill() : void
++skip() : String
++countScore() : int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>530</x>
+      <y>220</y>
+      <w>105</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Stone
 --
--stoneColor
+-stoneColor : StoneColor
+-lastChecked : int
+-owner : StoneColor
 --
-+getStoneColor()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>500</x><y>280</y><w>35</w><h>65</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m1=1
-m2=0...361</panel_attributes><additional_attributes>10;110;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>265</x><y>245</y><w>130</w><h>35</h></coordinates><panel_attributes>TODO
---
-nie wiem co z StoneColor
-nie jestem pewien GoThread &lt;- ServerParser
-nowe funkcje</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>705</x><y>415</y><w>105</w><h>25</h></coordinates><panel_attributes>ThreadState
++getStoneColor() : StoneColor
++setStoneColor() : void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>700</x>
+      <y>450</y>
+      <w>105</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>ThreadState
 {abstract}
 --
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>705</x><y>305</y><w>105</w><h>60</h></coordinates><panel_attributes>ColorPickingState
+-myPlayer : GoThread
+-otherPlayer :GoThread
 --
-+handleBlackPick()
-+handleWhitePick()
-+handlePlace()
-+handleSkip()
 +handleExit()
-+handleInvalid() </panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>750</x><y>435</y><w>15</w><h>90</h></coordinates><panel_attributes>lt=&lt;&lt;.</panel_attributes><additional_attributes>10;160;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>850</x><y>325</y><w>105</w><h>60</h></coordinates><panel_attributes>BlackTurnState
++handleInvalid()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>840</x>
+      <y>360</y>
+      <w>90</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>ColorPickingState
 --
-+handleBlackPick()
-+handleWhitePick()
-+handlePlace()
-+handleSkip()
-+handleExit()
-+handleInvalid() </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>855</x><y>455</y><w>105</w><h>60</h></coordinates><panel_attributes>WhiteTurnState
+@override 
+ServerCommandInterface </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>745</x>
+      <y>505</y>
+      <w>15</w>
+      <h>75</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>865</x>
+      <y>395</y>
+      <w>90</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>BlackTurnState
 --
-+handleBlackPick()
-+handleWhitePick()
-+handlePlace()
-+handleSkip()
-+handleExit()
-+handleInvalid() </panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>750</x><y>360</y><w>15</w><h>65</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;110;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>805</x><y>435</y><w>60</w><h>60</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;100;100;100</additional_attributes></element><element><id>Relation</id><coordinates><x>805</x><y>375</y><w>55</w><h>50</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;80;10;10;90;10</additional_attributes></element><element><id>Relation</id><coordinates><x>620</x><y>415</y><w>95</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+@override 
+ServerCommandInterface </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>865</x>
+      <y>430</y>
+      <w>90</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>WhiteTurnState
+--
+@override 
+ServerCommandInterface</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>615</x>
+      <y>450</y>
+      <w>95</w>
+      <h>195</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 m1=1
-m2=1</panel_attributes><additional_attributes>10;220;10;10;170;10</additional_attributes></element></diagram>
+m2=1</panel_attributes>
+    <additional_attributes>10.0;370.0;10.0;10.0;170.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>310</y>
+      <w>50</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+StoneColor
+--
+BLACK
+WHITE
+EMPTY
+BORDER</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>415</x>
+      <y>230</y>
+      <w>125</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>230.0;10.0;10.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>540</x>
+      <y>275</y>
+      <w>35</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=0...361</panel_attributes>
+    <additional_attributes>10.0;190.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>260</x>
+      <y>310</y>
+      <w>140</w>
+      <h>85</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;150.0;10.0;10.0;260.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>435</x>
+      <y>315</y>
+      <w>40</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>60.0;110.0;60.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>120</x>
+      <y>665</y>
+      <w>50</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+ClientState
+--
+COLOR
+DECIDING
+GAME_LOAD
+PLAYING
+SIZE</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>165</x>
+      <y>670</y>
+      <w>65</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1005</x>
+      <y>280</y>
+      <w>100</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;util&gt;&gt;
+GameLogger
+--
+-connection : Connection
+-statement : Statement
+-insertQuery : String
+-currGameID : int
+--
++logBoard() : void
++logGame() : void
++isFoundInDB() : boolean
++logScores() : void
++setCurrGameID() : void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>705</x>
+      <y>200</y>
+      <w>100</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;util&gt;&gt;
+GameLoader
+--
+-statement : Statement
+-currGameBoards : ResultSet
+-connection : Connection
+--
++listGames() : String
++loadBoardDBSV() : void
++loadNext() : void
++loadPrev() : void
++close() : void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>750</x>
+      <y>360</y>
+      <w>90</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>GameLoadingState
+--
+@override 
+ServerCommandInterface</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>865</x>
+      <y>465</y>
+      <w>90</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>DecidingState
+--
+@override 
+ServerCommandInterface</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>660</x>
+      <y>360</y>
+      <w>90</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>SizePickingState
+--
+@override 
+ServerCommandInterface</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>725</x>
+      <y>390</y>
+      <w>15</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>750</x>
+      <y>390</y>
+      <w>15</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>775</x>
+      <y>390</y>
+      <w>80</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;50.0;140.0;50.0;140.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>800</x>
+      <y>450</y>
+      <w>75</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>800</x>
+      <y>475</y>
+      <w>75</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>790</x>
+      <y>415</y>
+      <w>85</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0;150.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>710</x>
+      <y>285</y>
+      <w>15</w>
+      <h>85</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;150.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>780</x>
+      <y>285</y>
+      <w>15</w>
+      <h>85</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;150.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>950</x>
+      <y>375</y>
+      <w>95</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;80.0;170.0;80.0;170.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>950</x>
+      <y>375</y>
+      <w>110</w>
+      <h>85</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;150.0;200.0;150.0;200.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>950</x>
+      <y>375</y>
+      <w>125</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;200.0;230.0;200.0;230.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>285</y>
+      <w>190</w>
+      <h>85</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;150.0;10.0;10.0;360.0;10.0</additional_attributes>
+  </element>
+</diagram>
