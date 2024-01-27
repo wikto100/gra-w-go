@@ -55,7 +55,6 @@ public class WhiteTurnState extends ThreadState {
                 otherPlayer.out.println(response);
                 System.out.println("skipped turn");
             } else if (response.equals("DECIDING_RESPONSE$")) {
-                response = response + GameLogger.getCurrGameID() + "|" + GoServer.getBoard().getScores();
                 myPlayer.out.println(response);
                 otherPlayer.out.println(response);
                 System.out.println("Deciding score");

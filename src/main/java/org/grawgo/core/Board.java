@@ -35,6 +35,7 @@ public class Board implements Rules {
         return this.stones[x][y].getStoneColor() == StoneColor.EMPTY;
     }
 
+    @Override
     public boolean isKo(int x, int y, StoneColor color, StoneColor enemy){
         if (this.stones[x][y].lastChecked == 0 || this.stones[x][y].lastChecked <= this.lastMove - 4){
             return false;
@@ -198,6 +199,16 @@ public class Board implements Rules {
         }
     }
 
+    public void remove(int[] coords) {
+        int x = coords[0];
+        int y = coords[1];
+        if (this.stones[x][y].getStoneColor() == StoneColor.BLACK){
+            this.kill(x, y, StoneColor.BLACK);
+        } else if (this.stones[x][y].getStoneColor() == StoneColor.WHITE){
+            this.kill(x, y, StoneColor.WHITE);
+        } 
+    }
+
     @Override
     public int countScore(StoneColor color) {
         for (int i = 1; i <= this.size; i++) {
@@ -280,7 +291,6 @@ public class Board implements Rules {
         return x >= 1 && x <= this.size && y >= 1 && y <= this.size;
     }
 
-    // TODO gracze ustalaja ktore grupy sa martwe
     public String getScores() {
         countScore(StoneColor.WHITE);
         String res = String.valueOf(this.whitePoints);

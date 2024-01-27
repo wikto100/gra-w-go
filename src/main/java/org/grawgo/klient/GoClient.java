@@ -104,16 +104,13 @@ public class GoClient {
                 System.out.println("OK! Waiting for other players move...");
                 response = inFromServer.readLine();
                 if (clientParser.parseCommandFromServer(response).equals("DECIDING_RESPONSE")) {
-                    System.out.println("ID: " + clientParser.parseDataFromServer(response, 0) +" WHITE: "
-                            + clientParser.parseDataFromServer(response, 1) + " BLACK: " +
-                            clientParser.parseDataFromServer(response, 2));
+                    System.out.println("THE GAME IS ENDING");
                     joinedState = ClientState.DECIDING;
                     return true;
                 } else if (clientParser.parseCommandFromServer(response).equals("DISCONNECT_RESPONSE")) {
                     System.out.println("OPPONENT DISCONNECTED");
                     return false;
                 }
-
                 System.out.println(clientParser.parseBoardFromServer(response));
                 System.out.println(" __________________________ ** ___________________________");
                 return true;
@@ -134,9 +131,28 @@ public class GoClient {
                 return true;
             case "DECIDING_RESPONSE":
                 joinedState = ClientState.DECIDING;
+                System.out.println("THE GAME IS ENDING");
+                response = inFromServer.readLine();
+                if (clientParser.parseCommandFromServer(response).equals("DEAD_RESPONSE")) {
+                    System.out.print(clientParser.parseBoardFromServer(response));
+                    System.out.println(" __________________________ ** ___________________________");
+                } else if (clientParser.parseCommandFromServer(response).equals("END_GAME_RESPONSE")){
+                    System.out.println("THE GAME HAS ENDED");
+                    System.out.println("ID: " + clientParser.parseDataFromServer(response, 0) + " WHITE: " + clientParser.parseDataFromServer(response, 1) + " BLACK: " + clientParser.parseDataFromServer(response, 2));
+                    return false;
+                }
                 return true;
             case "DEAD_RESPONSE":
-                System.out.println("TODO: Jakis kamien umarl!!!");
+                System.out.print(clientParser.parseBoardFromServer(response));
+                response = inFromServer.readLine();
+                if (clientParser.parseCommandFromServer(response).equals("DEAD_RESPONSE")) {
+                    System.out.print(clientParser.parseBoardFromServer(response));
+                    System.out.println(" __________________________ ** ___________________________");
+                } else if (clientParser.parseCommandFromServer(response).equals("END_GAME_RESPONSE")){
+                    System.out.println("THE GAME HAS ENDED");
+                    System.out.println("ID: " + clientParser.parseDataFromServer(response, 0) + " WHITE: " + clientParser.parseDataFromServer(response, 1) + " BLACK: " + clientParser.parseDataFromServer(response, 2));
+                    return false;
+                }
                 return true;
             case "END_GAME_RESPONSE":
                 System.out.println("THE GAME HAS ENDED");

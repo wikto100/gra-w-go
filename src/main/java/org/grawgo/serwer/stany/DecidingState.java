@@ -32,8 +32,11 @@ public class DecidingState extends ThreadState {
 
     @Override
     public void handleDead(String command) {
-        // TODO: zaimplementuj ustalanie ktore kamienie sa martwe?
-        myPlayer.out.println("DEAD_RESPONSE$");
+        String response;
+        GoServer.getBoard().remove(serverParser.parseCoords(command));
+        response = serverParser.parseBoard("DEAD_RESPONSE$");
+        myPlayer.out.println(response);
+        otherPlayer.out.println(response);
     }
 
     @Override
@@ -41,8 +44,10 @@ public class DecidingState extends ThreadState {
         String response = "END_GAME_RESPONSE$";
         response = response + GameLogger.getCurrGameID() + "|" + GoServer.getBoard().getScores();
         myPlayer.out.println(response);
+        otherPlayer.out.println(response);
         GameLogger.logScores(GoServer.getBoard().getBlackPoints(), GoServer.getBoard().getWhitePoints());
         myPlayer.setRunning(false);
+        otherPlayer.setRunning(false);
     }
 
     @Override
