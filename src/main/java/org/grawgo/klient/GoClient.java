@@ -144,6 +144,7 @@ public class GoClient {
                 return true;
             case "DEAD_RESPONSE":
                 System.out.print(clientParser.parseBoardFromServer(response));
+                System.out.println(" __________________________ ** ___________________________");
                 response = inFromServer.readLine();
                 if (clientParser.parseCommandFromServer(response).equals("DEAD_RESPONSE")) {
                     System.out.print(clientParser.parseBoardFromServer(response));
@@ -153,6 +154,9 @@ public class GoClient {
                     System.out.println("ID: " + clientParser.parseDataFromServer(response, 0) + " WHITE: " + clientParser.parseDataFromServer(response, 1) + " BLACK: " + clientParser.parseDataFromServer(response, 2));
                     return false;
                 }
+                return true;
+            case "INVALID_STONE_RESPONSE":
+                System.out.println("Invalid stone chosen!");
                 return true;
             case "END_GAME_RESPONSE":
                 System.out.println("THE GAME HAS ENDED");

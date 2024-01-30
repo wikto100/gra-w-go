@@ -199,14 +199,22 @@ public class Board implements Rules {
         }
     }
 
-    public void remove(int[] coords) {
+    @Override
+    public boolean remove(int[] coords) {
         int x = coords[0];
         int y = coords[1];
+        if (!isInBounds(x, y)) {
+            return false;
+        }
         if (this.stones[x][y].getStoneColor() == StoneColor.BLACK){
             this.kill(x, y, StoneColor.BLACK);
+            return true;
         } else if (this.stones[x][y].getStoneColor() == StoneColor.WHITE){
             this.kill(x, y, StoneColor.WHITE);
-        } 
+            return true;
+        } else{
+            return false;
+        }
     }
 
     @Override

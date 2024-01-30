@@ -33,10 +33,15 @@ public class DecidingState extends ThreadState {
     @Override
     public void handleDead(String command) {
         String response;
-        GoServer.getBoard().remove(serverParser.parseCoords(command));
-        response = serverParser.parseBoard("DEAD_RESPONSE$");
-        myPlayer.out.println(response);
-        otherPlayer.out.println(response);
+        boolean success;
+        success = GoServer.getBoard().remove(serverParser.parseCoords(command));
+        if (success){
+            response = serverParser.parseBoard("DEAD_RESPONSE$");
+            myPlayer.out.println(response);
+            otherPlayer.out.println(response);
+        } else {
+            myPlayer.out.println("INVALID_STONE_RESPONSE$");
+        }
     }
 
     @Override
@@ -48,6 +53,7 @@ public class DecidingState extends ThreadState {
         GameLogger.logScores(GoServer.getBoard().getBlackPoints(), GoServer.getBoard().getWhitePoints());
         myPlayer.setRunning(false);
         otherPlayer.setRunning(false);
+        System.out.println("game ended");
     }
 
     @Override
