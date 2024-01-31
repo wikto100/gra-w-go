@@ -38,7 +38,6 @@ public class GoThread extends Thread implements ServerCommandInterface {
             ////
             game:
             while (isRunning) {
-                //TODO: Sprawdz czy wlasciwa tura
                 command = in.readLine();
                 if (command != null) {
                     if(command.trim().equals("$") || command.isEmpty()){

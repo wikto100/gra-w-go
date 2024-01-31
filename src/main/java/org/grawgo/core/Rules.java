@@ -10,5 +10,4 @@ public interface Rules {
     String skip();
     boolean remove(int[] coords);
     int countScore(StoneColor color);
-// TODO: reszta zasad
 }

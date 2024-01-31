@@ -1,7 +1,6 @@
 package org.grawgo.serwer;
 
 
-//TODO wylapywanie nieprawidlowych danych po place
 //Double locked singleton
 public class ServerCommandParser {
     private static volatile ServerCommandParser instance;

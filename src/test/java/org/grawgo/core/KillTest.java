@@ -63,5 +63,4 @@ public class KillTest {
             assertEquals(result,StoneColor.EMPTY);
         }
     }
-    //TODO: wiekszy ksztalt
 }

@@ -12,7 +12,6 @@ import java.util.Scanner;
 
 public class GoServer {
     // instancja board przekazywana każdemu wątkowi do modyfikacji
-    // TODO: nowa plansza po zakonczeniu gry
     private static volatile Board board;
     private static volatile boolean whiteConnected = false;
     private static volatile boolean blackConnected = false;
@@ -67,8 +66,9 @@ public class GoServer {
 
     // zwroc pierwszego czarnego ktory spi
     public static GoThread getFirstBlackSleeper() {
+
         for (GoThread player : threads) {
-            if (player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("black")) {
+            if (player != null && player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("black")) {
                 return player;
             }
         }
@@ -77,7 +77,7 @@ public class GoServer {
 
     public static GoThread getFirstWhiteSleeper() {
         for (GoThread player : threads) {
-            if (player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("white")) {
+            if (player != null && player.getState().equals(Thread.State.WAITING) && player.getPlayerString().equals("white")) {
                 return player;
             }
         }
